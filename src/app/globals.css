@@ -1,0 +1,183 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+@import "highlight.js/styles/github-dark.css";
+
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f4f8f6;
+  --color-surface-alt: #eef6f1;
+
+  --color-mint: #7fc9a8;
+  --color-mint-strong: #56b18c;
+  --color-peach: #f3c79c;
+  --color-peach-strong: #e8a668;
+  --color-teal: #6fa9c0;
+  --color-navy: #2c3e50;
+
+  --color-ink: #1c2a36;
+  --color-muted: #6b7a86;
+  --color-border: #e2e8e5;
+
+  --color-ok: #62c98a;
+  --color-warn: #e8b155;
+  --color-danger: #e2685f;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-alt: var(--color-surface-alt);
+
+  --color-mint: var(--color-mint);
+  --color-mint-strong: var(--color-mint-strong);
+  --color-peach: var(--color-peach);
+  --color-peach-strong: var(--color-peach-strong);
+  --color-teal: var(--color-teal);
+  --color-navy: var(--color-navy);
+
+  --color-ink: var(--color-ink);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+
+  --color-ok: var(--color-ok);
+  --color-warn: var(--color-warn);
+  --color-danger: var(--color-danger);
+
+  --font-sans: var(--font-pretendard), "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-mint);
+  color: #ffffff;
+}
+
+/* ---------- Markdown / blog post content ---------- */
+
+.prose-delibot {
+  max-width: 42rem;
+  margin-inline: auto;
+  color: var(--color-ink);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.prose-delibot > * + * {
+  margin-top: 1.25em;
+}
+
+.prose-delibot h1,
+.prose-delibot h2,
+.prose-delibot h3,
+.prose-delibot h4 {
+  color: var(--color-navy);
+  font-weight: 800;
+  line-height: 1.35;
+  margin-top: 2em;
+}
+
+.prose-delibot h1 {
+  font-size: 1.9em;
+}
+.prose-delibot h2 {
+  font-size: 1.5em;
+}
+.prose-delibot h3 {
+  font-size: 1.25em;
+}
+
+.prose-delibot a {
+  color: var(--color-mint-strong);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-delibot strong {
+  color: var(--color-navy);
+  font-weight: 700;
+}
+
+.prose-delibot ul,
+.prose-delibot ol {
+  padding-left: 1.4em;
+}
+
+.prose-delibot ul {
+  list-style: disc;
+}
+
+.prose-delibot ol {
+  list-style: decimal;
+}
+
+.prose-delibot li + li {
+  margin-top: 0.4em;
+}
+
+.prose-delibot blockquote {
+  border-left: 3px solid var(--color-mint);
+  padding-left: 1em;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.prose-delibot hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.prose-delibot img {
+  border-radius: 1rem;
+}
+
+.prose-delibot :not(pre) > code {
+  background: var(--color-surface);
+  color: var(--color-navy);
+  border-radius: 0.35em;
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.prose-delibot pre {
+  background: #0d1117;
+  border-radius: 1rem;
+  padding: 1.1em 1.3em;
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.prose-delibot pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: transparent;
+}
+
+.prose-delibot table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.prose-delibot th,
+.prose-delibot td {
+  border: 1px solid var(--color-border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.prose-delibot th {
+  background: var(--color-surface);
+  color: var(--color-navy);
+}
+
+.prose-delibot .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em 0;
+}
