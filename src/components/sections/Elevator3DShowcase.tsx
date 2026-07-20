@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 
 const StepViewer = dynamic(
@@ -15,5 +16,36 @@ const StepViewer = dynamic(
 );
 
 export function Elevator3DShowcase() {
-  return <StepViewer url="/models/elevator-controller.step" />;
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="h-full w-full">
+      {visible ? (
+        <StepViewer url="/models/elevator-controller.step" />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-sm text-muted">
+          스크롤하면 3D 모델을 불러옵니다
+        </div>
+      )}
+    </div>
+  );
 }
