@@ -47,7 +47,7 @@ BOM은 다음과 같다!
 
 
 # 막노동의 시간
-이제 납땝을 하면 된다. 자습 3시간을 모두 갈아넣어 4명이 돌아가며 한 결과 아래와 같이 완벽한 PCB 5개를 만들었다...!!
+이제 납땝을 하면 된다. 자습 3시간을 모두 갈아넣어 4명이 돌아가며 한 결과 아래와 같이 완벽한 PCB 5개를 만들었다...!! (다이오드 풋프린트 잘못 지정해서 어거지로 달음....)
 ![Real PCB](https://github.com/Delibot-Lab/Elevator-Controller-PCB/blob/main/exports/KakaoTalk_20260720_201619150.jpg?raw=true)
 
 ![](https://i.pinimg.com/originals/fa/b0/dc/fab0dc9e3a68347af1b85e56885816b4.gif)
