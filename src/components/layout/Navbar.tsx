@@ -2,11 +2,35 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { siteConfig } from "@/lib/site";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [admin, setAdmin] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/status")
+      .then((res) => res.json())
+      .then((data: { authenticated?: boolean }) => {
+        if (!cancelled) setAdmin(!!data.authenticated);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setAdmin(false);
+    setOpen(false);
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-bg/80 backdrop-blur-md">
@@ -43,6 +67,15 @@ export function Navbar() {
           >
             GitHub
           </a>
+          {admin && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-sm font-medium text-muted transition-colors hover:text-danger"
+            >
+              로그아웃
+            </button>
+          )}
         </nav>
 
         <button
@@ -81,6 +114,15 @@ export function Navbar() {
           >
             GitHub
           </a>
+          {admin && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg px-3 py-2.5 text-left text-sm font-medium text-danger hover:bg-surface"
+            >
+              로그아웃
+            </button>
+          )}
         </nav>
       )}
     </header>

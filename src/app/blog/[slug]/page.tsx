@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Badge } from "@/components/ui/Badge";
+import { BackLink } from "@/components/ui/BackLink";
+import { AdminOnly } from "@/components/ui/AdminOnly";
 import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
-import { isAuthenticated } from "@/lib/session";
 
 export const dynamicParams = true;
 
@@ -44,11 +45,11 @@ export default async function BlogPostPage({
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  const admin = await isAuthenticated();
-
   return (
     <article className="bg-bg py-16 md:py-24">
       <Container>
+        <BackLink href="/blog" label="목록으로" className="mb-8" />
+
         <Reveal className="mx-auto mb-12 flex max-w-2xl flex-col items-center gap-4 text-center">
           {post.tags.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2">
@@ -64,17 +65,15 @@ export default async function BlogPostPage({
             <span>{post.author}</span>
             <span>·</span>
             <span>{post.date}</span>
-            {admin && (
-              <>
-                <span>·</span>
-                <Link
-                  href={`/blog/${post.slug}/edit`}
-                  className="font-medium text-mint-strong"
-                >
-                  수정
-                </Link>
-              </>
-            )}
+            <AdminOnly>
+              <span>·</span>
+              <Link
+                href={`/blog/${post.slug}/edit`}
+                className="font-medium text-mint-strong"
+              >
+                수정
+              </Link>
+            </AdminOnly>
           </div>
         </Reveal>
 
