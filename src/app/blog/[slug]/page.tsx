@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Badge } from "@/components/ui/Badge";
 import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
+import { isAuthenticated } from "@/lib/session";
 
 export const dynamicParams = true;
 
@@ -42,6 +44,8 @@ export default async function BlogPostPage({
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
+  const admin = await isAuthenticated();
+
   return (
     <article className="bg-bg py-16 md:py-24">
       <Container>
@@ -60,6 +64,17 @@ export default async function BlogPostPage({
             <span>{post.author}</span>
             <span>·</span>
             <span>{post.date}</span>
+            {admin && (
+              <>
+                <span>·</span>
+                <Link
+                  href={`/blog/${post.slug}/edit`}
+                  className="font-medium text-mint-strong"
+                >
+                  수정
+                </Link>
+              </>
+            )}
           </div>
         </Reveal>
 

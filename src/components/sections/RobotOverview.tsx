@@ -1,12 +1,15 @@
 import Image from "next/image";
+import { Disc, Cpu, Settings2, Compass, BatteryCharging } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import { IconBadge } from "@/components/ui/IconBadge";
 import { Reveal } from "@/components/ui/Reveal";
+import { Parallax } from "@/components/ui/Parallax";
 
 const parts = [
   {
     tag: "구동",
+    icon: Disc,
     color: "mint" as const,
     title: "2륜 차동 구동",
     description:
@@ -14,6 +17,7 @@ const parts = [
   },
   {
     tag: "두뇌",
+    icon: Cpu,
     color: "teal" as const,
     title: "STM32F401CCU6",
     description:
@@ -21,6 +25,7 @@ const parts = [
   },
   {
     tag: "구동계",
+    icon: Settings2,
     color: "peach" as const,
     title: "L298N 모터 드라이버",
     description:
@@ -28,6 +33,7 @@ const parts = [
   },
   {
     tag: "센서",
+    icon: Compass,
     color: "mint" as const,
     title: "엔코더 + BNO080 IMU",
     description:
@@ -48,8 +54,11 @@ export function RobotOverview() {
         {parts.map((part, i) => (
           <Reveal key={part.title} delay={i * 0.08}>
             <Card className="h-full">
-              <Badge color={part.color}>{part.tag}</Badge>
-              <h3 className="mt-4 text-lg font-bold text-navy">
+              <IconBadge icon={part.icon} color={part.color} />
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">
+                {part.tag}
+              </p>
+              <h3 className="mt-1 text-lg font-bold text-navy">
                 {part.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -62,7 +71,11 @@ export function RobotOverview() {
 
       <Reveal delay={0.32} className="mt-5">
         <Card tone="bg" className="grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-center">
-          <div className="relative mx-auto aspect-[3/4] w-full max-w-[220px] overflow-hidden rounded-2xl bg-surface">
+          <Parallax
+            y={[24, -24]}
+            scale={[0.92, 1.04]}
+            className="relative mx-auto aspect-[3/4] w-full max-w-[220px] overflow-hidden rounded-2xl bg-surface"
+          >
             <Image
               src="/battery.png"
               alt="Delibot 자체 제작 배터리팩"
@@ -70,10 +83,13 @@ export function RobotOverview() {
               sizes="220px"
               className="object-contain"
             />
-          </div>
+          </Parallax>
           <div>
-            <Badge color="peach">전원</Badge>
-            <h3 className="mt-4 text-lg font-bold text-navy">
+            <IconBadge icon={BatteryCharging} color="peach" />
+            <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">
+              전원
+            </p>
+            <h3 className="mt-1 text-lg font-bold text-navy">
               3S 14400mAh 자체 제작 배터리팩
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted md:text-base">

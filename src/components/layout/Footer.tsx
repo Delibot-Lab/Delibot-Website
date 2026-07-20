@@ -11,6 +11,12 @@ export function Footer() {
             <p className="mt-2 text-sm leading-relaxed text-muted">
               {siteConfig.description}
             </p>
+            <a
+              href={`mailto:${siteConfig.contactEmail}`}
+              className="mt-4 inline-block text-sm font-medium text-navy hover:text-mint-strong"
+            >
+              {siteConfig.contactEmail}
+            </a>
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">

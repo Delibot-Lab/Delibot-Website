@@ -68,8 +68,8 @@ export default function AboutPage() {
         id="repos"
         tone="surface"
         eyebrow="OPEN SOURCE"
-        title="어떻게 만들어졌는지, 모두 공개되어 있어요"
-        description="Delibot을 구성하는 모든 저장소는 GitHub에서 확인할 수 있습니다."
+        title="펌웨어부터 회로도까지, 전부 오픈소스로 공개합니다"
+        description="Delibot Lab은 펌웨어, 라이브러리, 웹 도구, PCB 설계 파일까지 모든 소스를 GitHub에 공개하는 것을 원칙으로 합니다."
       >
         <div className="grid gap-5 sm:grid-cols-2">
           {siteConfig.repos.map((repo, i) => (

@@ -58,6 +58,12 @@ function postPath(slug: string): string {
   return `${POSTS_DIR}/${slug}.md`;
 }
 
+const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export function isValidSlug(slug: string): boolean {
+  return SLUG_PATTERN.test(slug) && slug.length <= 96;
+}
+
 export async function getAllPosts(): Promise<PostMeta[]> {
   const entries = await listDir(POSTS_DIR);
   const mdFiles = entries.filter(
@@ -86,6 +92,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 }
 
 export async function createPost(input: PostInput): Promise<void> {
+  if (!isValidSlug(input.slug)) {
+    throw new Error(`올바르지 않은 slug입니다: "${input.slug}"`);
+  }
   const path = postPath(input.slug);
   const existing = await getFile(path, { revalidate: 0 });
   if (existing) {
@@ -98,6 +107,9 @@ export async function updatePost(
   slug: string,
   input: PostInput
 ): Promise<void> {
+  if (!isValidSlug(slug) || !isValidSlug(input.slug)) {
+    throw new Error("올바르지 않은 slug입니다.");
+  }
   const path = postPath(slug);
   const existing = await getFile(path, { revalidate: 0 });
   if (!existing) {
@@ -132,6 +144,7 @@ export async function updatePost(
 }
 
 export async function deletePost(slug: string): Promise<void> {
+  if (!isValidSlug(slug)) return;
   const path = postPath(slug);
   const existing = await getFile(path, { revalidate: 0 });
   if (!existing) return;

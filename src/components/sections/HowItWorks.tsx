@@ -1,22 +1,30 @@
+import { Gamepad2, CircuitBoard, CircleStop } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
+import { IconBadge } from "@/components/ui/IconBadge";
 import { Reveal } from "@/components/ui/Reveal";
 
 const priority = [
   {
     step: "1순위",
+    icon: Gamepad2,
+    color: "mint" as const,
     title: "CRSF 무선 조종",
     description:
       "TBS CRSF 수신기 신호가 300ms 이내로 살아있으면 언제나 이 명령이 우선합니다.",
   },
   {
     step: "2순위",
+    icon: CircuitBoard,
+    color: "teal" as const,
     title: "라즈베리파이 자율 명령",
     description:
       "CRSF 연결이 끊기면 UART로 들어오는 라즈베리파이의 속도 명령으로 자동 전환됩니다(500ms 데드맨 타임아웃).",
   },
   {
     step: "안전장치",
+    icon: CircleStop,
+    color: "peach" as const,
     title: "Failsafe 정지",
     description: "두 명령 소스가 모두 끊기면 모터를 즉시 정지시킵니다.",
   },
@@ -34,10 +42,11 @@ export function HowItWorks() {
         {priority.map((item, i) => (
           <Reveal key={item.step} delay={i * 0.1}>
             <Card tone="bg" className="h-full border-2 border-border">
-              <span className="text-xs font-bold uppercase tracking-wide text-mint-strong">
+              <IconBadge icon={item.icon} color={item.color} />
+              <span className="mt-3 block text-xs font-bold uppercase tracking-wide text-mint-strong">
                 {item.step}
               </span>
-              <h3 className="mt-3 text-lg font-bold text-navy">
+              <h3 className="mt-1 text-lg font-bold text-navy">
                 {item.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">

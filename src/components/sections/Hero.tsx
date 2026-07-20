@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
+import { Parallax } from "@/components/ui/Parallax";
 
 const stats = [
   "200Hz 실시간 제어 루프",
@@ -11,13 +12,13 @@ const stats = [
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-bg pt-16 pb-24 md:pt-24 md:pb-32">
-      <div
-        aria-hidden
+    <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-bg pt-20 pb-20 md:pt-24">
+      <Parallax
+        y={[-60, 60]}
         className="pointer-events-none absolute -top-32 right-[-10%] h-[28rem] w-[28rem] rounded-full bg-mint/25 blur-3xl"
       />
-      <div
-        aria-hidden
+      <Parallax
+        y={[40, -80]}
         className="pointer-events-none absolute top-40 left-[-15%] h-[24rem] w-[24rem] rounded-full bg-peach/30 blur-3xl"
       />
 
@@ -55,22 +56,26 @@ export function Hero() {
           </ul>
         </Reveal>
 
-        <Reveal
-          delay={0.15}
-          className="relative mx-auto w-full max-w-md"
-        >
-          <div className="relative aspect-[8/5] overflow-hidden rounded-[2rem] border border-border bg-surface shadow-[0_30px_60px_-25px_rgba(44,62,80,0.35)]">
-            <Image
-              src="/delibot-logo.png"
-              alt="Delibot 로봇 마스코트"
-              fill
-              sizes="(min-width: 768px) 28rem, 90vw"
-              className="object-cover object-top"
-              priority
-            />
-          </div>
+        <Reveal delay={0.15} className="relative mx-auto w-full max-w-md">
+          <Parallax y={[30, -30]}>
+            <div className="relative aspect-square overflow-hidden rounded-[2rem] border border-border bg-surface shadow-[0_30px_60px_-25px_rgba(44,62,80,0.35)]">
+              <Image
+                src="/delibot-logo.png"
+                alt="Delibot 로봇 마스코트"
+                fill
+                sizes="(min-width: 768px) 28rem, 90vw"
+                className="object-contain p-6"
+                priority
+              />
+            </div>
+          </Parallax>
         </Reveal>
       </Container>
+
+      <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs font-medium text-muted">
+        <span>SCROLL</span>
+        <span className="h-8 w-px animate-pulse bg-border" />
+      </div>
     </section>
   );
 }

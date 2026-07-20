@@ -1,8 +1,11 @@
 import Image from "next/image";
+import { Radio, DoorOpen, Volume2, Lightbulb, RotateCw } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Reveal } from "@/components/ui/Reveal";
+import { Parallax } from "@/components/ui/Parallax";
+import { Elevator3DShowcase } from "./Elevator3DShowcase";
 
 export function CampusUseCase() {
   return (
@@ -15,7 +18,11 @@ export function CampusUseCase() {
     >
       <Reveal>
         <Card tone="bg" className="grid gap-8 md:grid-cols-[1fr_1.2fr] md:items-center">
-          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-surface">
+          <Parallax
+            y={[24, -24]}
+            scale={[0.92, 1.04]}
+            className="relative aspect-square w-full overflow-hidden rounded-2xl bg-surface"
+          >
             <Image
               src="/elevator-board-render.png"
               alt="Delibot Elevator Controller PCB 렌더"
@@ -23,7 +30,7 @@ export function CampusUseCase() {
               sizes="(min-width: 768px) 24rem, 90vw"
               className="object-contain"
             />
-          </div>
+          </Parallax>
 
           <div>
             <Badge color="teal">Elevator-Controller-PCB</Badge>
@@ -38,19 +45,37 @@ export function CampusUseCase() {
             </p>
             <ul className="mt-5 grid grid-cols-2 gap-3 text-sm">
               {[
-                "2.4GHz NRF24L01 무선 링크",
-                "서보 모터 2개 (문 / 층 이동)",
-                "부저 음성 피드백",
-                "전원·디버그·에러 상태 LED",
+                { icon: Radio, label: "2.4GHz NRF24L01 무선 링크" },
+                { icon: DoorOpen, label: "서보 모터 2개 (문 / 층 이동)" },
+                { icon: Volume2, label: "부저 음성 피드백" },
+                { icon: Lightbulb, label: "전원·디버그·에러 상태 LED" },
               ].map((item) => (
                 <li
-                  key={item}
-                  className="rounded-2xl bg-surface px-4 py-3 font-medium text-ink"
+                  key={item.label}
+                  className="flex items-center gap-2 rounded-2xl bg-surface px-4 py-3 font-medium text-ink"
                 >
-                  {item}
+                  <item.icon className="h-4 w-4 shrink-0 text-teal" aria-hidden />
+                  {item.label}
                 </li>
               ))}
             </ul>
+          </div>
+        </Card>
+      </Reveal>
+
+      <Reveal delay={0.15} className="mt-6">
+        <Card tone="bg" className="overflow-hidden !p-0">
+          <div className="p-6 pb-0 md:p-8 md:pb-0">
+            <h3 className="flex items-center gap-2 text-xl font-bold text-navy md:text-2xl">
+              3D로 직접 살펴보세요
+              <RotateCw className="h-5 w-5 text-mint-strong" aria-hidden />
+            </h3>
+            <p className="mt-2 text-sm text-muted">
+              마우스로 드래그하면 돌려볼 수 있어요. 실제 설계한 보드의 3D 모델입니다.
+            </p>
+          </div>
+          <div className="mt-4 h-[26rem] w-full md:h-[32rem]">
+            <Elevator3DShowcase />
           </div>
         </Card>
       </Reveal>
