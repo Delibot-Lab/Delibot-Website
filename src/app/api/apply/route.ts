@@ -16,7 +16,9 @@ export async function POST(req: NextRequest) {
   const name = str(body?.name);
   const studentId = str(body?.studentId);
   const phone = str(body?.phone);
+  const githubId = str(body?.githubId);
   const motivation = str(body?.motivation);
+  const slackJoined = body?.slackJoined === true;
   const teams = Array.isArray(body?.teams)
     ? body.teams.filter(
         (t: unknown): t is string =>
@@ -24,15 +26,37 @@ export async function POST(req: NextRequest) {
       )
     : [];
 
-  if (!name || !studentId || !phone || teams.length === 0 || !motivation) {
+  if (
+    !name ||
+    !studentId ||
+    !phone ||
+    !githubId ||
+    teams.length === 0 ||
+    !motivation
+  ) {
     return NextResponse.json(
       { error: "모든 항목을 입력해주세요." },
       { status: 400 }
     );
   }
 
+  if (!slackJoined) {
+    return NextResponse.json(
+      { error: "Slack 가입 여부를 확인해주세요." },
+      { status: 400 }
+    );
+  }
+
   try {
-    await sendApplicationEmail({ name, studentId, phone, teams, motivation });
+    await sendApplicationEmail({
+      name,
+      studentId,
+      phone,
+      githubId,
+      teams,
+      motivation,
+      slackJoined,
+    });
   } catch (err) {
     console.error("Failed to send application email:", err);
     return NextResponse.json(

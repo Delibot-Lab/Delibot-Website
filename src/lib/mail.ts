@@ -11,8 +11,10 @@ export type ApplicationInput = {
   name: string;
   studentId: string;
   phone: string;
+  githubId: string;
   teams: string[];
   motivation: string;
+  slackJoined: boolean;
 };
 
 export async function sendApplicationEmail(
@@ -38,7 +40,9 @@ export async function sendApplicationEmail(
       `이름: ${input.name}`,
       `학번: ${input.studentId}`,
       `연락처: ${input.phone}`,
+      `GitHub: ${input.githubId}`,
       `지원 분야: ${input.teams.join(", ")}`,
+      `Slack 가입(본명): ${input.slackJoined ? "예" : "아니오"}`,
       "",
       "지원 동기 및 자기소개:",
       input.motivation,
