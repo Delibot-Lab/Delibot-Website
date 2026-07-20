@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Delibot | CBSH DeliBot Lab",
   description:
     "캠퍼스를 누비는 배달 로봇 Delibot. CBSH DeliBot Lab이 만드는 자율주행 배달 로봇 프로젝트를 소개합니다.",
+  verification: {
+    google: "xAyYkYGezYlzmSkzhCwwrTl-nCGv6ewScASAFt9AnQc",
+  },
 };
 
 export default function RootLayout({
