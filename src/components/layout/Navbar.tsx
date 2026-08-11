@@ -55,6 +55,14 @@ export function Navbar() {
           >
             GitHub
           </a>
+          {authenticated && (
+            <Link
+              href="/chat"
+              className="text-sm font-medium text-muted transition-colors hover:text-navy"
+            >
+              채팅
+            </Link>
+          )}
           {isAdmin && (
             <Link
               href="/admin"
@@ -117,6 +125,15 @@ export function Navbar() {
           >
             GitHub
           </a>
+          {authenticated && (
+            <Link
+              href="/chat"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface"
+            >
+              채팅
+            </Link>
+          )}
           {isAdmin && (
             <Link
               href="/admin"

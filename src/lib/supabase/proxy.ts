@@ -9,7 +9,12 @@ function isAdminPath(pathname: string): boolean {
 }
 
 function isLoginRequiredPath(pathname: string): boolean {
-  return pathname === "/join" || pathname === "/api/apply";
+  return (
+    pathname === "/join" ||
+    pathname === "/api/apply" ||
+    pathname === "/chat" ||
+    pathname.startsWith("/chat/")
+  );
 }
 
 export async function updateSession(request: NextRequest) {
