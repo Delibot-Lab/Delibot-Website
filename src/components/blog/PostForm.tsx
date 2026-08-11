@@ -2,6 +2,7 @@
 
 import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
+import { MarkdownEditor } from "./MarkdownEditor";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import type { Post } from "@/lib/posts";
 
@@ -219,13 +220,9 @@ export function PostForm({
         </p>
 
         {tab === "write" ? (
-          <textarea
-            required
-            rows={20}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className={`${inputClass} font-mono`}
-          />
+          <div className="mt-2">
+            <MarkdownEditor value={content} onChange={setContent} rows={20} />
+          </div>
         ) : (
           <div className="mt-2 rounded-xl border border-border bg-bg p-6">
             {content ? (

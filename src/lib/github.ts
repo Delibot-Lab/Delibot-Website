@@ -6,7 +6,7 @@ function env(name: string): string {
   return value;
 }
 
-function repoBase() {
+export function repoBase() {
   return {
     owner: env("GITHUB_OWNER"),
     repo: env("GITHUB_REPO"),
@@ -96,6 +96,27 @@ export async function putFile(
   });
   if (!res.ok) {
     throw new Error(`GitHub putFile(${path}) failed: ${res.status} ${await res.text()}`);
+  }
+}
+
+/** content는 이미 base64로 인코딩된 바이너리 데이터여야 한다 (이미지 등). */
+export async function putBinaryFile(
+  path: string,
+  base64Content: string,
+  message: string
+): Promise<void> {
+  const res = await githubFetch(path, {
+    method: "PUT",
+    cache: "no-store",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message,
+      content: base64Content,
+      branch: repoBase().branch,
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(`GitHub putBinaryFile(${path}) failed: ${res.status} ${await res.text()}`);
   }
 }
 
