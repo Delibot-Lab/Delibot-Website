@@ -1,11 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// 글 작성(새 글)은 로그인한 회원이면 누구나, 글 관리(수정/삭제)는 admin만.
 function isAdminPath(pathname: string): boolean {
-  if (pathname === "/blog/write" || pathname === "/admin") return true;
-  if (pathname.startsWith("/admin/")) return true;
-  if (pathname.startsWith("/api/posts")) return true;
-  return /^\/blog\/[^/]+\/edit$/.test(pathname);
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return true;
+  if (/^\/blog\/[^/]+\/edit$/.test(pathname)) return true;
+  // /api/posts/<slug> (수정·삭제)만 admin 전용. /api/posts, /api/posts/images는 제외.
+  return /^\/api\/posts\/(?!images$)[^/]+$/.test(pathname);
 }
 
 function isLoginRequiredPath(pathname: string): boolean {
@@ -13,7 +14,10 @@ function isLoginRequiredPath(pathname: string): boolean {
     pathname === "/join" ||
     pathname === "/api/apply" ||
     pathname === "/chat" ||
-    pathname.startsWith("/chat/")
+    pathname.startsWith("/chat/") ||
+    pathname === "/blog/write" ||
+    pathname === "/api/posts" ||
+    pathname === "/api/posts/images"
   );
 }
 

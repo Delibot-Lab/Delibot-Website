@@ -4,6 +4,11 @@
   --bn-font-family: var(--font-sans);
   --bn-border-radius: 12px;
 
+  /* shadcn/ui의 bg-muted는 "옅은 배경색"을 뜻하는데, 이 사이트는 --color-muted를
+     이미 "글자색"으로 쓰고 있어서 전역으로는 못 바꾼다. 에디터 안에서만 배경색 의미로
+     덮어쓴다 (globals.css의 shadcn 토큰 주석 참고). */
+  --color-muted: var(--color-surface);
+
   --bn-colors-editor-text: var(--color-ink);
   --bn-colors-editor-background: var(--color-bg);
 
@@ -19,12 +24,12 @@
   --bn-colors-selected-text: #ffffff;
   --bn-colors-selected-background: var(--color-mint-strong);
 
-  --bn-colors-disabled-text: var(--color-muted);
+  --bn-colors-disabled-text: var(--color-muted-foreground);
   --bn-colors-disabled-background: var(--color-surface);
 
   --bn-colors-shadow: var(--color-border);
   --bn-colors-border: var(--color-border);
-  --bn-colors-side-menu: var(--color-muted);
+  --bn-colors-side-menu: var(--color-muted-foreground);
 }
 
 .bn-editor {
@@ -47,5 +52,5 @@
 
 .bn-side-menu button svg,
 .bn-formatting-toolbar button svg {
-  color: var(--color-muted);
+  color: var(--color-muted-foreground);
 }

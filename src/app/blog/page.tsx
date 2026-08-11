@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { PostCard } from "@/components/blog/PostCard";
-import { AdminOnly } from "@/components/ui/AdminOnly";
+import { MemberOnly } from "@/components/ui/MemberOnly";
 import { getAllPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
 
@@ -37,14 +37,14 @@ export default async function BlogPage() {
           <p className="max-w-xl text-muted">
             Delibot을 만들면서 겪은 문제와 해결 과정을 기록합니다.
           </p>
-          <AdminOnly>
+          <MemberOnly>
             <Link
               href="/blog/write"
               className="rounded-full bg-navy px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.03]"
             >
               새 글 작성
             </Link>
-          </AdminOnly>
+          </MemberOnly>
         </Reveal>
 
         {loadError ? (
