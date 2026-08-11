@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import type { Post } from "@/lib/posts";
+import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 
 const MarkdownEditor = dynamic(
   () => import("./MarkdownEditor").then((m) => m.MarkdownEditor),
@@ -46,11 +47,14 @@ function Field({
 export function PostForm({
   mode,
   initialPost,
+  defaultAuthor,
 }: {
   mode: "create" | "edit";
   initialPost?: Post;
+  defaultAuthor?: string;
 }) {
   const router = useRouter();
+  const confirmDialog = useConfirmDialog();
 
   const [title, setTitle] = useState(initialPost?.title ?? "");
   const [slug, setSlug] = useState(initialPost?.slug ?? "");
@@ -59,7 +63,7 @@ export function PostForm({
   );
   const [excerpt, setExcerpt] = useState(initialPost?.excerpt ?? "");
   const [author, setAuthor] = useState(
-    initialPost?.author || "CBSH DeliBot Lab"
+    initialPost?.author || defaultAuthor || "CBSH DeliBot Lab"
   );
   const [tags, setTags] = useState(initialPost?.tags.join(", ") ?? "");
   const [content, setContent] = useState(initialPost?.content ?? "");
@@ -115,7 +119,13 @@ export function PostForm({
 
   async function handleDelete() {
     if (!initialPost) return;
-    if (!confirm("정말 이 글을 삭제할까요?")) return;
+    const ok = await confirmDialog({
+      title: "정말 이 글을 삭제할까요?",
+      description: "이 작업은 되돌릴 수 없어요.",
+      confirmLabel: "삭제",
+      danger: true,
+    });
+    if (!ok) return;
 
     setDeleting(true);
     setError(null);

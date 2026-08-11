@@ -11,9 +11,11 @@ import {
   ChevronDown,
   Pencil,
   Trash2,
+  UserX,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 
 export type AdminMember = {
   id: string;
@@ -64,7 +66,10 @@ export function AdminDashboard({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [deletingMemberId, setDeletingMemberId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const confirmDialog = useConfirmDialog();
 
   const stats = [
     { label: "총 회원", value: members.length, icon: Users },
@@ -74,15 +79,16 @@ export function AdminDashboard({
   ];
 
   async function toggleAdmin(member: AdminMember) {
+    setError(null);
     setTogglingId(member.id);
     try {
       const supabase = createClient();
-      const { error } = await supabase.rpc("toggle_admin", {
+      const { error: rpcError } = await supabase.rpc("toggle_admin", {
         p_user_id: member.id,
         p_is_admin: !member.is_admin,
       });
-      if (error) {
-        alert(error.message);
+      if (rpcError) {
+        setError(rpcError.message);
         return;
       }
       setMembers((prev) =>
@@ -93,14 +99,49 @@ export function AdminDashboard({
     }
   }
 
+  async function deleteMember(member: AdminMember) {
+    const ok = await confirmDialog({
+      title: `"${member.name}" 회원을 삭제할까요?`,
+      description: "계정, 지원서, 채팅 기록이 모두 삭제됩니다. 이 작업은 되돌릴 수 없어요.",
+      confirmLabel: "삭제",
+      danger: true,
+    });
+    if (!ok) return;
+
+    setError(null);
+    setDeletingMemberId(member.id);
+    try {
+      const supabase = createClient();
+      const { error: rpcError } = await supabase.rpc("admin_delete_member", {
+        p_user_id: member.id,
+      });
+      if (rpcError) {
+        setError(rpcError.message);
+        return;
+      }
+      setMembers((prev) => prev.filter((m) => m.id !== member.id));
+      if (expandedId === member.id) setExpandedId(null);
+    } finally {
+      setDeletingMemberId(null);
+    }
+  }
+
   async function deletePost(slug: string, title: string) {
-    if (!confirm(`"${title}" 글을 삭제할까요?`)) return;
+    const ok = await confirmDialog({
+      title: `"${title}" 글을 삭제할까요?`,
+      description: "이 작업은 되돌릴 수 없어요.",
+      confirmLabel: "삭제",
+      danger: true,
+    });
+    if (!ok) return;
+
+    setError(null);
     setDeletingSlug(slug);
     try {
       const res = await fetch(`/api/posts/${slug}`, { method: "DELETE" });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        alert(data?.error ?? "삭제에 실패했습니다.");
+        setError(data?.error ?? "삭제에 실패했습니다.");
         return;
       }
       router.refresh();
@@ -111,6 +152,19 @@ export function AdminDashboard({
 
   return (
     <div>
+      {error && (
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
+          <span>{error}</span>
+          <button
+            type="button"
+            onClick={() => setError(null)}
+            aria-label="오류 메시지 닫기"
+            className="shrink-0 font-semibold hover:underline"
+          >
+            닫기
+          </button>
+        </div>
+      )}
       <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4">
         {stats.map((s) => (
           <div
@@ -166,6 +220,7 @@ export function AdminDashboard({
                     <th className="py-3 pr-4 font-medium">지원 상태</th>
                     <th className="py-3 pr-4 font-medium">지원 분야</th>
                     <th className="py-3 pr-4 font-medium">권한</th>
+                    <th className="py-3 pr-4 font-medium" />
                   </tr>
                 </thead>
                 <tbody>
@@ -227,10 +282,22 @@ export function AdminDashboard({
                               {m.is_admin ? "관리자" : "일반 회원"}
                             </button>
                           </td>
+                          <td className="py-2.5 pr-4" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              type="button"
+                              title={m.id === currentUserId ? "본인 계정은 스스로 삭제할 수 없어요" : "회원 삭제"}
+                              aria-label={m.id === currentUserId ? "본인 계정은 스스로 삭제할 수 없어요" : "회원 삭제"}
+                              onClick={() => deleteMember(m)}
+                              disabled={deletingMemberId === m.id || m.id === currentUserId}
+                              className="flex h-7 w-7 items-center justify-center rounded-full text-muted hover:bg-bg hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              <UserX className="h-3.5 w-3.5" />
+                            </button>
+                          </td>
                         </tr>
                         {expanded && (
                           <tr className="border-b border-border/60 bg-bg">
-                            <td colSpan={8} className="px-4 py-4">
+                            <td colSpan={9} className="px-4 py-4">
                               {m.applied ? (
                                 <div className="grid gap-3 text-sm sm:grid-cols-3">
                                   <div>
@@ -295,6 +362,7 @@ export function AdminDashboard({
                         <Link
                           href={`/blog/${post.slug}/edit`}
                           title="수정"
+                          aria-label="수정"
                           className="flex h-7 w-7 items-center justify-center rounded-full text-muted hover:bg-surface hover:text-navy"
                         >
                           <Pencil className="h-3.5 w-3.5" />
@@ -302,6 +370,7 @@ export function AdminDashboard({
                         <button
                           type="button"
                           title="삭제"
+                          aria-label="삭제"
                           onClick={() => deletePost(post.slug, post.title)}
                           disabled={deletingSlug === post.slug}
                           className="flex h-7 w-7 items-center justify-center rounded-full text-muted hover:bg-surface hover:text-danger disabled:opacity-50"
