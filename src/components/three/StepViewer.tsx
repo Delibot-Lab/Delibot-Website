@@ -61,17 +61,33 @@ export function StepViewer({ url }: { url: string }) {
 
   useEffect(() => {
     let cancelled = false;
+    let worker: Worker | null = null;
 
     (async () => {
       try {
-        const occtimportjs = (await import("occt-import-js")).default;
-        const occt = await occtimportjs({
-          locateFile: () => "/wasm/occt-import-js.wasm",
-        });
-
-        const res = await fetch(url);
+        const res = await fetch(url, { priority: "low" });
         const buffer = await res.arrayBuffer();
-        const result = occt.ReadStepFile(new Uint8Array(buffer), null);
+        if (cancelled) return;
+
+        // STEP parsing runs the OCCT CAD kernel in WASM and can take seconds
+        // on this ~17MB file — do it in a worker so it doesn't block the
+        // main thread (and with it, scroll-triggered animations elsewhere
+        // on the page).
+        worker = new Worker("/wasm/occt-import-js-worker.js");
+        const result = await new Promise<{
+          success: boolean;
+          meshes: OcctMesh[];
+        }>((resolve, reject) => {
+          worker!.onmessage = (ev) => {
+            if (ev.data.ok) resolve(ev.data.result);
+            else reject(new Error(ev.data.error));
+          };
+          worker!.onerror = (ev) => reject(ev.error ?? new Error("worker error"));
+          worker!.postMessage(
+            { format: "step", buffer: new Uint8Array(buffer), params: null },
+            [buffer]
+          );
+        });
 
         if (cancelled) return;
         if (!result.success || result.meshes.length === 0) {
@@ -88,6 +104,7 @@ export function StepViewer({ url }: { url: string }) {
 
     return () => {
       cancelled = true;
+      worker?.terminate();
     };
   }, [url]);
 
