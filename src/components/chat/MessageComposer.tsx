@@ -124,7 +124,7 @@ export function MessageComposer({
   }
 
   return (
-    <div className="relative border-t border-border px-4 py-3">
+    <div className="relative border-t border-border px-4 pt-3 pb-[calc(var(--spacing)*3+env(safe-area-inset-bottom))]">
       {mentionQuery && filteredMembers.length > 0 && (
         <div className="absolute bottom-full left-4 z-10 mb-1 w-56 overflow-hidden rounded-xl border border-border bg-bg py-1 shadow-lg">
           {filteredMembers.map((member, i) => (

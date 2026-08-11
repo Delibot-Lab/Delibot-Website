@@ -51,6 +51,9 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
+  // env(safe-area-inset-*)가 실제 값을 갖게 하려면 필요하다 (노치/홈 인디케이터 영역까지
+  // 레이아웃을 확장). 채팅 입력창처럼 화면 맨 아래에 고정되는 요소에서 사용한다.
+  viewportFit: "cover",
 };
 
 const organizationJsonLd = {
