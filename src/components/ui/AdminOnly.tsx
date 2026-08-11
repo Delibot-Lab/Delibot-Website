@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCurrentUser } from "@/lib/supabase/useCurrentUser";
 
 /**
  * 정적/ISR 캐시되는 페이지에서 관리자 전용 UI를 안전하게 보여주기 위한 래퍼.
@@ -8,21 +8,7 @@ import { useEffect, useState } from "react";
  * 마운트 후 클라이언트에서 세션을 확인해 렌더링한다.
  */
 export function AdminOnly({ children }: { children: React.ReactNode }) {
-  const [admin, setAdmin] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/auth/status")
-      .then((res) => res.json())
-      .then((data: { authenticated?: boolean }) => {
-        if (!cancelled && data.authenticated) setAdmin(true);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  if (!admin) return null;
+  const { isAdmin } = useCurrentUser();
+  if (!isAdmin) return null;
   return <>{children}</>;
 }

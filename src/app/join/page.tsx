@@ -3,13 +3,28 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { JoinForm } from "@/components/join/JoinForm";
 import { siteConfig } from "@/lib/site";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: `팀원 모집 | ${siteConfig.name}`,
   description: `${siteConfig.labName}과 함께할 팀원을 모집합니다.`,
 };
 
-export default function JoinPage() {
+export default async function JoinPage() {
+  const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims.sub;
+
+  let initialName = "";
+  if (userId) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("name")
+      .eq("id", userId)
+      .single();
+    initialName = profile?.name ?? "";
+  }
+
   return (
     <>
       <section className="bg-bg pb-8 pt-20 md:pt-28">
@@ -50,7 +65,7 @@ export default function JoinPage() {
           </div>
 
           <Reveal className="mx-auto max-w-2xl rounded-3xl border border-border bg-bg p-6 md:p-10">
-            <JoinForm />
+            <JoinForm initialName={initialName} />
           </Reveal>
         </Container>
       </section>

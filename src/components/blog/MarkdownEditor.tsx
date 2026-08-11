@@ -2,9 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { BlockNoteEditor, type PartialBlock } from "@blocknote/core";
+import { ko } from "@blocknote/core/locales";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/shadcn/style.css";
+import "./blocknote-theme.css";
 
 /**
  * BlockNote의 마크다운 파서는 이미지가 앞뒤 문단과 줄바꿈 하나로만 붙어 있으면
@@ -70,6 +72,7 @@ export function MarkdownEditor({
 
   const editor = useCreateBlockNote({
     initialContent,
+    dictionary: ko,
     uploadFile: async (file: File): Promise<string> => {
       setError(null);
       try {

@@ -1,0 +1,51 @@
+/* BlockNote 기본 테마는 사이트 색상/폰트와 안 맞아서(회색 톤, Inter 폰트, 6px 라운드)
+   사이트 디자인 토큰(navy/mint/surface, Pretendard, 넉넉한 라운드)에 맞춰 덮어쓴다. */
+.bn-root {
+  --bn-font-family: var(--font-sans);
+  --bn-border-radius: 12px;
+
+  --bn-colors-editor-text: var(--color-ink);
+  --bn-colors-editor-background: var(--color-bg);
+
+  --bn-colors-menu-text: var(--color-ink);
+  --bn-colors-menu-background: var(--color-bg);
+
+  --bn-colors-tooltip-text: #ffffff;
+  --bn-colors-tooltip-background: var(--color-navy);
+
+  --bn-colors-hovered-text: var(--color-navy);
+  --bn-colors-hovered-background: var(--color-surface);
+
+  --bn-colors-selected-text: #ffffff;
+  --bn-colors-selected-background: var(--color-mint-strong);
+
+  --bn-colors-disabled-text: var(--color-muted);
+  --bn-colors-disabled-background: var(--color-surface);
+
+  --bn-colors-shadow: var(--color-border);
+  --bn-colors-border: var(--color-border);
+  --bn-colors-side-menu: var(--color-muted);
+}
+
+.bn-editor {
+  padding: 1rem 1.25rem;
+  font-size: 0.9375rem;
+}
+
+.bn-editor .bn-block-content[data-content-type="heading"] {
+  color: var(--color-navy);
+  font-weight: 700;
+}
+
+.bn-toolbar,
+.bn-suggestion-menu,
+.bn-panel,
+.bn-color-picker-dropdown {
+  border-radius: var(--bn-border-radius) !important;
+  box-shadow: 0 8px 24px -8px rgba(44, 62, 80, 0.18) !important;
+}
+
+.bn-side-menu button svg,
+.bn-formatting-toolbar button svg {
+  color: var(--color-muted);
+}

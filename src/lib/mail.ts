@@ -9,7 +9,8 @@ function env(name: string): string {
 
 export type ApplicationInput = {
   name: string;
-  studentId: string;
+  email: string;
+  birthday: string;
   phone: string;
   githubId: string;
   teams: string[];
@@ -38,7 +39,8 @@ export async function sendApplicationEmail(
     subject: `[Delibot 팀원 지원] ${input.name} (${input.teams.join(", ")})`,
     text: [
       `이름: ${input.name}`,
-      `학번: ${input.studentId}`,
+      `이메일: ${input.email}`,
+      `생년월일: ${input.birthday}`,
       `연락처: ${input.phone}`,
       `GitHub: ${input.githubId}`,
       `지원 분야: ${input.teams.join(", ")}`,

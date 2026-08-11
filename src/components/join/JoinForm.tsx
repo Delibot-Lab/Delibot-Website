@@ -24,9 +24,8 @@ function Field({
   );
 }
 
-export function JoinForm() {
-  const [name, setName] = useState("");
-  const [studentId, setStudentId] = useState("");
+export function JoinForm({ initialName = "" }: { initialName?: string }) {
+  const [name, setName] = useState(initialName);
   const [phone, setPhone] = useState("");
   const [githubId, setGithubId] = useState("");
   const [teams, setTeams] = useState<string[]>([]);
@@ -45,7 +44,6 @@ export function JoinForm() {
 
   const isComplete =
     name.trim() !== "" &&
-    studentId.trim() !== "" &&
     phone.trim() !== "" &&
     githubId.trim() !== "" &&
     teams.length > 0 &&
@@ -76,7 +74,6 @@ export function JoinForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          studentId,
           phone,
           githubId,
           teams,
@@ -119,24 +116,14 @@ export function JoinForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="이름">
-          <input
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={inputClass}
-          />
-        </Field>
-        <Field label="학번">
-          <input
-            required
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
-            className={inputClass}
-          />
-        </Field>
-      </div>
+      <Field label="이름">
+        <input
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className={inputClass}
+        />
+      </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="연락처 (전화번호)">

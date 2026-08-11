@@ -1,21 +1,18 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { LoginForm } from "@/components/auth/LoginForm";
+import { SignupForm } from "@/components/auth/SignupForm";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `로그인 | ${siteConfig.name}`,
+  title: `회원가입 | ${siteConfig.name}`,
 };
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <section className="bg-bg py-24">
       <Container className="flex flex-col items-center gap-6">
-        <h1 className="text-2xl font-bold text-navy">로그인</h1>
-        <Suspense>
-          <LoginForm />
-        </Suspense>
+        <h1 className="text-2xl font-bold text-navy">회원가입</h1>
+        <SignupForm />
       </Container>
     </section>
   );

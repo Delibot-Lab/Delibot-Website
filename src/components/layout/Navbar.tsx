@@ -3,30 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { siteConfig } from "@/lib/site";
+import { createClient } from "@/lib/supabase/client";
+import { useCurrentUser } from "@/lib/supabase/useCurrentUser";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [admin, setAdmin] = useState(false);
+  const { authenticated, isAdmin } = useCurrentUser();
   const router = useRouter();
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/auth/status")
-      .then((res) => res.json())
-      .then((data: { authenticated?: boolean }) => {
-        if (!cancelled) setAdmin(!!data.authenticated);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setAdmin(false);
+    await createClient().auth.signOut();
     setOpen(false);
     router.push("/");
     router.refresh();
@@ -67,7 +55,15 @@ export function Navbar() {
           >
             GitHub
           </a>
-          {admin && (
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="text-sm font-medium text-muted transition-colors hover:text-navy"
+            >
+              관리자
+            </Link>
+          )}
+          {authenticated ? (
             <button
               type="button"
               onClick={handleLogout}
@@ -75,6 +71,13 @@ export function Navbar() {
             >
               로그아웃
             </button>
+          ) : (
+            <Link
+              href="/login"
+              className="text-sm font-medium text-muted transition-colors hover:text-navy"
+            >
+              로그인
+            </Link>
           )}
         </nav>
 
@@ -114,7 +117,16 @@ export function Navbar() {
           >
             GitHub
           </a>
-          {admin && (
+          {isAdmin && (
+            <Link
+              href="/admin"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface"
+            >
+              관리자
+            </Link>
+          )}
+          {authenticated ? (
             <button
               type="button"
               onClick={handleLogout}
@@ -122,6 +134,14 @@ export function Navbar() {
             >
               로그아웃
             </button>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface"
+            >
+              로그인
+            </Link>
           )}
         </nav>
       )}
