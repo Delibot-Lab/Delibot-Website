@@ -60,19 +60,24 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted md:flex-row md:items-center md:justify-between">
           <p>
             &copy; {new Date().getFullYear()} {siteConfig.labName}. All rights
             reserved.
           </p>
-          <a
-            href={siteConfig.githubOrgUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="font-medium text-navy hover:text-mint-strong"
-          >
-            GitHub Organization →
-          </a>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="font-medium text-navy hover:text-mint-strong">
+              개인정보 안내
+            </Link>
+            <a
+              href={siteConfig.githubOrgUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-navy hover:text-mint-strong"
+            >
+              GitHub Organization →
+            </a>
+          </div>
         </div>
       </div>
     </footer>
