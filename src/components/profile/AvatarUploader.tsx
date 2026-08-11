@@ -84,6 +84,7 @@ export function AvatarUploader({
         disabled={uploading}
         className="group relative h-28 w-28 overflow-hidden rounded-full border-2 border-border bg-mint disabled:opacity-60"
         title="프로필 사진 변경"
+        aria-label="프로필 사진 변경"
       >
         {avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- 업로드 직후 캐시 무효화 쿼리스트링을 붙인 동적 URL

@@ -14,19 +14,22 @@
   --color-surface-alt: #eef6f1;
 
   --color-mint: #7fc9a8;
-  --color-mint-strong: #56b18c;
+  /* WCAG AA(4.5:1) 통과를 위해 원래 #56b18c보다 살짝 어둡게 조정 (링크/텍스트로 널리 쓰임) */
+  --color-mint-strong: #3d8366;
   --color-peach: #f3c79c;
   --color-peach-strong: #e8a668;
   --color-teal: #6fa9c0;
   --color-navy: #2c3e50;
 
   --color-ink: #1c2a36;
-  --color-muted: #6b7a86;
+  /* WCAG AA 통과를 위해 원래 #6b7a86보다 살짝 어둡게 조정 */
+  --color-muted: #697783;
   --color-border: #e2e8e5;
 
   --color-ok: #62c98a;
   --color-warn: #e8b155;
-  --color-danger: #e2685f;
+  /* WCAG AA 통과를 위해 원래 #e2685f보다 살짝 어둡게 조정 (에러 메시지에 쓰임) */
+  --color-danger: #d93b30;
 
   /* shadcn/ui 토큰. @blocknote/shadcn이 이 이름들(bg-primary, text-muted-foreground 등)을
      그대로 쓰기 때문에 정의해야 한다. --color-muted는 이 사이트에서 이미 "글자색"으로 쓰고
@@ -44,8 +47,9 @@
   --color-secondary-foreground: var(--color-navy);
   /* 값을 그대로 복사(간접 참조 X): --color-muted는 .bn-root 안에서 다른 의미로
      덮어써지는데, var() 간접 참조는 사용되는 지점의 캐스케이드를 따라가므로
-     간접 참조하면 그 안에서 같이 바뀌어버린다. */
-  --color-muted-foreground: #6b7a86;
+     간접 참조하면 그 안에서 같이 바뀌어버린다. WCAG AA 통과를 위해 --color-muted와
+     동일하게 어둡게 조정. */
+  --color-muted-foreground: #697783;
   --color-accent: var(--color-surface);
   --color-accent-foreground: var(--color-navy);
   --color-destructive: var(--color-danger);
@@ -122,24 +126,31 @@ body {
   margin-top: 1.25em;
 }
 
-.prose-delibot h1,
-.prose-delibot h2,
-.prose-delibot h3,
-.prose-delibot h4 {
+/* 글 제목이 페이지의 유일한 h1이어야 해서, 마크다운 본문의 제목은
+   MarkdownRenderer에서 한 단계씩 내려 렌더링한다(h1→h2, h2→h3 ...).
+   시각적 크기는 태그가 아니라 이 클래스들로 고정해서 렌더링 레벨이
+   바뀌어도 기존 글 디자인이 그대로 유지되게 한다. */
+.prose-delibot .prose-h1,
+.prose-delibot .prose-h2,
+.prose-delibot .prose-h3,
+.prose-delibot .prose-h4 {
   color: var(--color-navy);
   font-weight: 800;
   line-height: 1.35;
   margin-top: 2em;
 }
 
-.prose-delibot h1 {
+.prose-delibot .prose-h1 {
   font-size: 1.9em;
 }
-.prose-delibot h2 {
+.prose-delibot .prose-h2 {
   font-size: 1.5em;
 }
-.prose-delibot h3 {
+.prose-delibot .prose-h3 {
   font-size: 1.25em;
+}
+.prose-delibot .prose-h4 {
+  font-size: 1.1em;
 }
 
 .prose-delibot a {

@@ -99,7 +99,9 @@ export function Navbar() {
 
         <button
           type="button"
-          aria-label="메뉴 열기"
+          aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
           className="flex h-9 w-9 items-center justify-center rounded-full text-navy md:hidden"
           onClick={() => setOpen((v) => !v)}
         >
@@ -114,7 +116,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-border/70 bg-bg px-5 py-3 md:hidden">
+        <nav id="mobile-nav" className="flex flex-col gap-1 border-t border-border/70 bg-bg px-5 py-3 md:hidden">
           {siteConfig.nav.map((item) => (
             <Link
               key={item.href}
