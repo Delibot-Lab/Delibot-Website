@@ -94,7 +94,7 @@ export function AvatarUploader({
             {initials(name)}
           </span>
         )}
-        <span className="absolute inset-0 flex items-center justify-center bg-navy/0 text-white opacity-0 transition-opacity group-hover:bg-navy/50 group-hover:opacity-100">
+        <span className="absolute inset-0 flex items-center justify-center bg-navy/0 text-white opacity-0 transition-opacity group-hover:bg-navy/50 group-hover:opacity-100 group-focus-visible:bg-navy/50 group-focus-visible:opacity-100">
           <Camera className="h-6 w-6" />
         </span>
       </button>

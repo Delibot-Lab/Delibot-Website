@@ -90,7 +90,7 @@ export function MessageList({
                     {(canEdit || canDelete) && !isEditing && (
                       // 터치 기기엔 hover가 없어서 항상 보이게 하고, 데스크톱(md+)에서만
                       // 마우스 오버 시 나타나는 절제된 UI로 바꾼다.
-                      <span className="ml-auto flex items-center gap-0.5 md:opacity-0 md:transition-opacity md:group-hover:opacity-100">
+                      <span className="ml-auto flex items-center gap-0.5 md:opacity-0 md:transition-opacity md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                         {canEdit && (
                           <button
                             type="button"
