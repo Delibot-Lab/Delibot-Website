@@ -16,6 +16,8 @@
     "@react-three/fiber": "^9.6.1",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.109.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "gray-matter": "^4.0.3",
     "katex": "^0.18.1",
     "lucide-react": "^1.25.0",
