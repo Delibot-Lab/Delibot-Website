@@ -112,6 +112,20 @@ body {
   color: #ffffff;
 }
 
+/* MotionProvider가 Framer Motion 애니메이션은 이미 OS의 "동작 줄이기" 설정을 따르지만,
+   일반 CSS transition(채팅 드로어의 슬라이드 등)은 별개 시스템이라 자동으로 적용되지
+   않는다. 접근성 취약(전정기관 문제 등) 사용자를 위해 전역으로 즉시 전환되게 한다. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ---------- Markdown / blog post content ---------- */
 
 .prose-delibot {
