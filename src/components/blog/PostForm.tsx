@@ -2,9 +2,21 @@
 
 import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
-import { MarkdownEditor } from "./MarkdownEditor";
+import dynamic from "next/dynamic";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import type { Post } from "@/lib/posts";
+
+const MarkdownEditor = dynamic(
+  () => import("./MarkdownEditor").then((m) => m.MarkdownEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-80 items-center justify-center rounded-xl border border-border bg-bg text-sm text-muted">
+        에디터를 불러오는 중...
+      </div>
+    ),
+  }
+);
 
 const inputClass =
   "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-sm outline-none focus:border-mint";
@@ -210,18 +222,21 @@ export function PostForm({
           </div>
         </div>
         <p className="mt-1 text-xs text-muted">
-          블록 수식은{" "}
-          <code className="rounded bg-surface px-1 py-0.5 font-mono">$$</code>
-          를 별도 줄에 써주세요. 인라인 수식은{" "}
+          수식은{" "}
           <code className="rounded bg-surface px-1 py-0.5 font-mono">
             $E=mc^2$
           </code>
-          처럼 씁니다.
+          (인라인) 또는{" "}
+          <code className="rounded bg-surface px-1 py-0.5 font-mono">
+            $$ \int_0^1 x^2 dx $$
+          </code>
+          (블록, 한 줄로) 처럼 씁니다. $$ 사이를 줄바꿈하면 편집기에서 깨지니 한 줄로 써주세요. 편집
+          중엔 텍스트 그대로 보이고, 미리보기와 실제 글에서 수식으로 렌더링돼요.
         </p>
 
         {tab === "write" ? (
           <div className="mt-2">
-            <MarkdownEditor value={content} onChange={setContent} rows={20} />
+            <MarkdownEditor value={content} onChange={setContent} />
           </div>
         ) : (
           <div className="mt-2 rounded-xl border border-border bg-bg p-6">
