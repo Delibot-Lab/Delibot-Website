@@ -123,6 +123,12 @@ export function ChatView({
     return map;
   }, [members]);
 
+  const memberAvatars = useMemo(() => {
+    const map: Record<string, string | null> = {};
+    for (const m of members) map[m.id] = m.avatar_url;
+    return map;
+  }, [members]);
+
   return (
     <div className="flex min-h-0 flex-1">
       <div className="flex min-w-0 flex-1 flex-col">
@@ -136,6 +142,7 @@ export function ChatView({
         <MessageList
           messages={messages}
           memberNames={memberNames}
+          memberAvatars={memberAvatars}
           currentUserId={currentUserId}
           replyCounts={replyCounts}
           attachments={attachments}
@@ -154,6 +161,7 @@ export function ChatView({
           channelId={channel.id}
           parentId={threadParentId}
           memberNames={memberNames}
+          memberAvatars={memberAvatars}
           members={members}
           currentUserId={currentUserId}
           onClose={() => setThreadParentId(null)}

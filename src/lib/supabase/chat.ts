@@ -29,6 +29,7 @@ export type MessageAttachment = {
 export type ChannelMember = {
   id: string;
   name: string;
+  avatar_url: string | null;
 };
 
 /**

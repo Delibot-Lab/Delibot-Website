@@ -5,21 +5,12 @@ import { MessageSquare } from "lucide-react";
 import { formatMessageTime, type ChatMessage, type MessageAttachment } from "@/lib/supabase/chat";
 import { MessageContent } from "./MessageContent";
 import { AttachmentPreview } from "./AttachmentPreview";
-
-function initials(name: string): string {
-  return name.trim().slice(0, 1).toUpperCase() || "?";
-}
-
-const AVATAR_COLORS = ["bg-mint", "bg-peach", "bg-teal"];
-function avatarColor(userId: string): string {
-  let hash = 0;
-  for (let i = 0; i < userId.length; i++) hash = (hash * 31 + userId.charCodeAt(i)) >>> 0;
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
-}
+import { Avatar } from "./Avatar";
 
 export function MessageList({
   messages,
   memberNames,
+  memberAvatars,
   currentUserId,
   replyCounts,
   attachments,
@@ -27,6 +18,7 @@ export function MessageList({
 }: {
   messages: ChatMessage[];
   memberNames: Record<string, string>;
+  memberAvatars: Record<string, string | null>;
   currentUserId: string;
   replyCounts: Record<string, number>;
   attachments: Record<string, MessageAttachment[]>;
@@ -50,13 +42,7 @@ export function MessageList({
             const replyCount = replyCounts[message.id] ?? 0;
             return (
               <li key={message.id} className="flex gap-3">
-                <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white ${avatarColor(
-                    message.user_id
-                  )}`}
-                >
-                  {initials(name)}
-                </div>
+                <Avatar userId={message.user_id} name={name} avatarUrl={memberAvatars[message.user_id]} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm font-bold text-navy">

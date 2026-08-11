@@ -12,11 +12,13 @@ import {
 import { MessageContent } from "./MessageContent";
 import { MessageComposer } from "./MessageComposer";
 import { AttachmentPreview } from "./AttachmentPreview";
+import { Avatar } from "./Avatar";
 
 export function ThreadPanel({
   channelId,
   parentId,
   memberNames,
+  memberAvatars,
   members,
   currentUserId,
   onClose,
@@ -24,6 +26,7 @@ export function ThreadPanel({
   channelId: string;
   parentId: string;
   memberNames: Record<string, string>;
+  memberAvatars: Record<string, string | null>;
   members: ChannelMember[];
   currentUserId: string;
   onClose: () => void;
@@ -103,19 +106,27 @@ export function ThreadPanel({
 
       <div className="flex-1 overflow-y-auto px-4 py-3">
         {parent && (
-          <div className="border-b border-border pb-3">
-            <div className="flex items-baseline gap-2">
-              <span className="text-sm font-bold text-navy">
-                {memberNames[parent.user_id] ?? "알 수 없음"}
-              </span>
-              <span className="text-xs text-muted">{formatMessageTime(parent.created_at)}</span>
+          <div className="flex gap-2.5 border-b border-border pb-3">
+            <Avatar
+              userId={parent.user_id}
+              name={memberNames[parent.user_id] ?? "?"}
+              avatarUrl={memberAvatars[parent.user_id]}
+              size={7}
+            />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm font-bold text-navy">
+                  {memberNames[parent.user_id] ?? "알 수 없음"}
+                </span>
+                <span className="text-xs text-muted">{formatMessageTime(parent.created_at)}</span>
+              </div>
+              <div className="mt-0.5 whitespace-pre-wrap break-words text-sm text-ink">
+                <MessageContent content={parent.content} memberNames={memberNames} />
+              </div>
+              {attachments[parent.id]?.map((att) => (
+                <AttachmentPreview key={att.id} attachment={att} />
+              ))}
             </div>
-            <div className="mt-0.5 whitespace-pre-wrap break-words text-sm text-ink">
-              <MessageContent content={parent.content} memberNames={memberNames} />
-            </div>
-            {attachments[parent.id]?.map((att) => (
-              <AttachmentPreview key={att.id} attachment={att} />
-            ))}
           </div>
         )}
 
@@ -125,22 +136,30 @@ export function ThreadPanel({
 
         <ul className="flex flex-col gap-3">
           {replies.map((reply) => (
-            <li key={reply.id}>
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm font-bold text-navy">
-                  {memberNames[reply.user_id] ?? "알 수 없음"}
-                  {reply.user_id === currentUserId && (
-                    <span className="ml-1 text-xs font-normal text-muted">(나)</span>
-                  )}
-                </span>
-                <span className="text-xs text-muted">{formatMessageTime(reply.created_at)}</span>
+            <li key={reply.id} className="flex gap-2.5">
+              <Avatar
+                userId={reply.user_id}
+                name={memberNames[reply.user_id] ?? "?"}
+                avatarUrl={memberAvatars[reply.user_id]}
+                size={7}
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm font-bold text-navy">
+                    {memberNames[reply.user_id] ?? "알 수 없음"}
+                    {reply.user_id === currentUserId && (
+                      <span className="ml-1 text-xs font-normal text-muted">(나)</span>
+                    )}
+                  </span>
+                  <span className="text-xs text-muted">{formatMessageTime(reply.created_at)}</span>
+                </div>
+                <div className="mt-0.5 whitespace-pre-wrap break-words text-sm text-ink">
+                  <MessageContent content={reply.content} memberNames={memberNames} />
+                </div>
+                {attachments[reply.id]?.map((att) => (
+                  <AttachmentPreview key={att.id} attachment={att} />
+                ))}
               </div>
-              <div className="mt-0.5 whitespace-pre-wrap break-words text-sm text-ink">
-                <MessageContent content={reply.content} memberNames={memberNames} />
-              </div>
-              {attachments[reply.id]?.map((att) => (
-                <AttachmentPreview key={att.id} attachment={att} />
-              ))}
             </li>
           ))}
         </ul>

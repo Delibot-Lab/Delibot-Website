@@ -22,10 +22,12 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
 
   const supabase = await createClient();
 
+  let userTeams: string[] = [];
+
   if (!user.isAdmin) {
     const { data: application } = await supabase
       .from("applications")
-      .select("id")
+      .select("teams")
       .eq("user_id", user.id)
       .maybeSingle();
 
@@ -47,6 +49,8 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
         </section>
       );
     }
+
+    userTeams = (application.teams ?? []) as string[];
   }
 
   const { data: channels } = await supabase
@@ -55,10 +59,15 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
     .order("kind")
     .order("name");
 
+  // admin은 팀 채널 4개를 전부 보고, 일반 회원은 본인이 지원한 팀 채널만 본다.
+  const visibleChannels = (channels ?? []).filter(
+    (c) => c.kind === "topic" || user.isAdmin || userTeams.includes(c.team as string)
+  );
+
   return (
     <section className="bg-bg">
       <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-7xl">
-        <ChatSidebar channels={(channels ?? []) as Channel[]} />
+        <ChatSidebar channels={visibleChannels as Channel[]} />
         <div className="flex min-w-0 flex-1 flex-col">{children}</div>
       </div>
     </section>

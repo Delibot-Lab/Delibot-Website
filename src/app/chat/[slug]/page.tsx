@@ -23,6 +23,16 @@ export default async function ChatChannelPage({
 
   if (!channel) notFound();
 
+  if (channel.kind === "team" && !user.isAdmin) {
+    const { data: application } = await supabase
+      .from("applications")
+      .select("teams")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const teams = (application?.teams ?? []) as string[];
+    if (!teams.includes(channel.team as string)) notFound();
+  }
+
   const { data: messages } = await supabase
     .from("messages")
     .select("id, channel_id, user_id, parent_id, content, created_at, edited_at")

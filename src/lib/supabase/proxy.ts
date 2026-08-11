@@ -17,7 +17,8 @@ function isLoginRequiredPath(pathname: string): boolean {
     pathname.startsWith("/chat/") ||
     pathname === "/blog/write" ||
     pathname === "/api/posts" ||
-    pathname === "/api/posts/images"
+    pathname === "/api/posts/images" ||
+    pathname === "/profile"
   );
 }
 

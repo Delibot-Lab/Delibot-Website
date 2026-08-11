@@ -63,6 +63,14 @@ export function Navbar() {
               채팅
             </Link>
           )}
+          {authenticated && (
+            <Link
+              href="/profile"
+              className="text-sm font-medium text-muted transition-colors hover:text-navy"
+            >
+              내 프로필
+            </Link>
+          )}
           {isAdmin && (
             <Link
               href="/admin"
@@ -132,6 +140,15 @@ export function Navbar() {
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface"
             >
               채팅
+            </Link>
+          )}
+          {authenticated && (
+            <Link
+              href="/profile"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface"
+            >
+              내 프로필
             </Link>
           )}
           {isAdmin && (
