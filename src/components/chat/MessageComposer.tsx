@@ -159,6 +159,7 @@ export function MessageComposer({
           onClick={() => fileInputRef.current?.click()}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-navy"
           title="파일 첨부"
+          aria-label="파일 첨부"
         >
           <Paperclip className="h-4 w-4" />
         </button>
@@ -215,6 +216,7 @@ export function MessageComposer({
           disabled={sending || (!content.trim() && !file)}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-navy text-white transition-transform hover:scale-105 disabled:opacity-40"
           title="보내기"
+          aria-label="보내기"
         >
           <SendHorizontal className="h-4 w-4" />
         </button>

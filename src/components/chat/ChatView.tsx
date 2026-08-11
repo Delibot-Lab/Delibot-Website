@@ -1,26 +1,31 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Menu } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { Channel, ChannelMember, ChatMessage, MessageAttachment } from "@/lib/supabase/chat";
 import { MessageList } from "./MessageList";
 import { MessageComposer } from "./MessageComposer";
 import { ThreadPanel } from "./ThreadPanel";
+import { useChatSidebar } from "./ChatSidebarContext";
 
 export function ChatView({
   channel,
   initialMessages,
   currentUserId,
+  isAdmin,
 }: {
   channel: Channel;
   initialMessages: ChatMessage[];
   currentUserId: string;
+  isAdmin: boolean;
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [replyCounts, setReplyCounts] = useState<Record<string, number>>({});
   const [attachments, setAttachments] = useState<Record<string, MessageAttachment[]>>({});
   const [members, setMembers] = useState<ChannelMember[]>([]);
   const [threadParentId, setThreadParentId] = useState<string | null>(null);
+  const { open: openSidebar } = useChatSidebar();
 
   const supabase = useMemo(() => createClient(), []);
   const messagesRef = useRef(messages);
@@ -91,6 +96,14 @@ export function ChatView({
           setMessages((prev) => prev.filter((m) => m.id !== old.id));
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "messages", filter: `channel_id=eq.${channel.id}` },
+        (payload) => {
+          const updated = payload.new as ChatMessage;
+          setMessages((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+        }
+      )
       .subscribe();
 
     // message_attachments에는 channel_id가 없어서 postgres_changes 필터를 걸 수 없다.
@@ -117,6 +130,23 @@ export function ChatView({
     };
   }, [supabase, channel.id]);
 
+  async function handleEditMessage(messageId: string, content: string) {
+    const { data, error } = await supabase
+      .from("messages")
+      .update({ content, edited_at: new Date().toISOString() })
+      .eq("id", messageId)
+      .select("id, channel_id, user_id, parent_id, content, created_at, edited_at")
+      .single();
+    if (error) return;
+    setMessages((prev) => prev.map((m) => (m.id === messageId ? (data as ChatMessage) : m)));
+  }
+
+  async function handleDeleteMessage(messageId: string) {
+    const { error } = await supabase.from("messages").delete().eq("id", messageId);
+    if (error) return;
+    setMessages((prev) => prev.filter((m) => m.id !== messageId));
+  }
+
   const memberNames = useMemo(() => {
     const map: Record<string, string> = {};
     for (const m of members) map[m.id] = m.name;
@@ -132,10 +162,20 @@ export function ChatView({
   return (
     <div className="flex min-h-0 flex-1">
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center gap-2 border-b border-border px-5 py-3.5">
-          <h1 className="font-bold text-navy">{channel.name}</h1>
+        <header className="flex items-center gap-2 border-b border-border px-4 py-3.5 md:px-5">
+          <button
+            type="button"
+            onClick={openSidebar}
+            aria-label="채널 목록 열기"
+            className="-ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted hover:bg-surface hover:text-navy md:hidden"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+          <h1 className="truncate font-bold text-navy">{channel.name}</h1>
           {channel.description && (
-            <span className="text-sm text-muted">— {channel.description}</span>
+            <span className="hidden truncate text-sm text-muted sm:inline">
+              — {channel.description}
+            </span>
           )}
         </header>
 
@@ -144,9 +184,12 @@ export function ChatView({
           memberNames={memberNames}
           memberAvatars={memberAvatars}
           currentUserId={currentUserId}
+          isAdmin={isAdmin}
           replyCounts={replyCounts}
           attachments={attachments}
           onOpenThread={setThreadParentId}
+          onEditMessage={handleEditMessage}
+          onDeleteMessage={handleDeleteMessage}
         />
 
         <MessageComposer

@@ -47,6 +47,7 @@ export default async function ChatChannelPage({
       channel={channel as Channel}
       initialMessages={(messages ?? []) as ChatMessage[]}
       currentUserId={user.id}
+      isAdmin={user.isAdmin}
     />
   );
 }
