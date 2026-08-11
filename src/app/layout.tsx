@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { MotionProvider } from "@/components/ui/MotionProvider";
+import { ConfirmDialogProvider } from "@/components/ui/ConfirmDialogProvider";
+import { siteConfig } from "@/lib/site";
 
 const pretendard = localFont({
   src: "../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2",
@@ -13,13 +15,52 @@ const pretendard = localFont({
   variable: "--font-pretendard",
 });
 
+const title = `${siteConfig.name} | ${siteConfig.labName}`;
+
 export const metadata: Metadata = {
-  title: "Delibot | CBSH DeliBot Lab",
-  description:
-    "캠퍼스를 누비는 배달 로봇 Delibot. CBSH DeliBot Lab이 만드는 자율주행 배달 로봇 프로젝트를 소개합니다.",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: title,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: ["Delibot", "CBSH", "배달 로봇", "자율주행", "동아리", "로보틱스"],
+  applicationName: siteConfig.name,
+  manifest: "/manifest.webmanifest",
   verification: {
     google: "xAyYkYGezYlzmSkzhCwwrTl-nCGv6ewScASAFt9AnQc",
   },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title,
+    description: siteConfig.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description: siteConfig.description,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  width: "device-width",
+  initialScale: 1,
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteConfig.labName,
+  alternateName: siteConfig.name,
+  url: siteConfig.url,
+  logo: `${siteConfig.url}/delibot-logo.png`,
+  description: siteConfig.description,
+  email: siteConfig.contactEmail,
+  sameAs: [siteConfig.githubOrgUrl],
 };
 
 export default function RootLayout({
@@ -30,12 +71,26 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-bg text-ink">
-        <MotionProvider>
-          <ScrollProgress />
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </MotionProvider>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-navy focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"
+        >
+          본문으로 건너뛰기
+        </a>
+        <ConfirmDialogProvider>
+          <MotionProvider>
+            <ScrollProgress />
+            <Navbar />
+            <main id="main-content" className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </MotionProvider>
+        </ConfirmDialogProvider>
       </body>
     </html>
   );

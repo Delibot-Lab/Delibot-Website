@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
-import { siteConfig } from "@/lib/site";
 import { getCurrentUser } from "@/lib/supabase/session";
 import { createClient } from "@/lib/supabase/server";
 import { getAllPosts } from "@/lib/posts";
 import { AdminDashboard, type AdminMember, type AdminPost } from "@/components/admin/AdminDashboard";
 
 export const metadata: Metadata = {
-  title: `관리자 | ${siteConfig.name}`,
+  title: "관리자",
+  robots: { index: false, follow: false },
 };
 
 export default async function AdminPage() {

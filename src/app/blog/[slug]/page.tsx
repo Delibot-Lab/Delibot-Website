@@ -8,6 +8,7 @@ import { BackLink } from "@/components/ui/BackLink";
 import { AdminOnly } from "@/components/ui/AdminOnly";
 import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
+import { siteConfig } from "@/lib/site";
 
 export const dynamicParams = true;
 
@@ -33,6 +34,19 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt,
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.date,
+      authors: [post.author],
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+    },
   };
 }
 
@@ -45,8 +59,24 @@ export default async function BlogPostPage({
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    author: { "@type": "Person", name: post.author },
+    publisher: { "@type": "Organization", name: siteConfig.labName },
+    url: `${siteConfig.url}/blog/${post.slug}`,
+    keywords: post.tags.join(", "),
+  };
+
   return (
     <article className="bg-bg py-16 md:py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Container>
         <BackLink href="/blog" label="목록으로" className="mb-8" />
 

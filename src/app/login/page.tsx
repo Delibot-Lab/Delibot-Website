@@ -2,10 +2,9 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `로그인 | ${siteConfig.name}`,
+  title: "로그인",
 };
 
 export default function LoginPage() {

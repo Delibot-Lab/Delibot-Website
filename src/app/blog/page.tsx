@@ -8,7 +8,7 @@ import { getAllPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `블로그 | ${siteConfig.name}`,
+  title: "블로그",
   description: `${siteConfig.labName}의 개발 기록과 소식을 전합니다.`,
 };
 

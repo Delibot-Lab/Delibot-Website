@@ -5,10 +5,10 @@ import { Card } from "@/components/ui/Card";
 import { getCurrentUser } from "@/lib/supabase/session";
 import { createClient } from "@/lib/supabase/server";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `내 프로필 | ${siteConfig.name}`,
+  title: "내 프로필",
+  robots: { index: false, follow: false },
 };
 
 export default async function ProfilePage() {

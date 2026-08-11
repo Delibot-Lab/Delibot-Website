@@ -4,10 +4,10 @@ import { Container } from "@/components/ui/Container";
 import { BackLink } from "@/components/ui/BackLink";
 import { PostForm } from "@/components/blog/PostForm";
 import { getPostBySlug } from "@/lib/posts";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `글 수정 | ${siteConfig.name}`,
+  title: "글 수정",
+  robots: { index: false, follow: false },
 };
 
 export default async function EditPostPage({

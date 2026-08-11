@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { SignupForm } from "@/components/auth/SignupForm";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `회원가입 | ${siteConfig.name}`,
+  title: "회원가입",
 };
 
 export default function SignupPage() {

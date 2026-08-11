@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `랩 소개 | ${siteConfig.name}`,
+  title: "랩 소개",
   description: `${siteConfig.labName}과 Delibot 프로젝트를 소개합니다.`,
 };
 

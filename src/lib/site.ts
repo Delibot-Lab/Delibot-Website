@@ -6,6 +6,7 @@ export const siteConfig = {
   tagline: "캠퍼스를 누비는 배달 로봇",
   description:
     "CBSH DeliBot Lab이 만드는 캠퍼스 내부 자율주행 배달 로봇, Delibot을 소개합니다.",
+  url: "https://delibotlab.vercel.app",
   githubOrgUrl: "https://github.com/Delibot-Lab",
   contactEmail: "delibot.lab@gmail.com",
   nav: [

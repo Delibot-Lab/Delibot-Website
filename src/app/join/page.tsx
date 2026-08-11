@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: `팀원 모집 | ${siteConfig.name}`,
+  title: "팀원 모집",
   description: `${siteConfig.labName}과 함께할 팀원을 모집합니다.`,
 };
 
