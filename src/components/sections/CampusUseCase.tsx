@@ -29,6 +29,7 @@ export function CampusUseCase() {
               fill
               sizes="(min-width: 768px) 24rem, 90vw"
               className="object-contain"
+              priority
             />
           </Parallax>
 

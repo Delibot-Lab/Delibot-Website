@@ -97,7 +97,8 @@ export function StepViewer({ url }: { url: string }) {
 
         setGroup(buildGroup(result.meshes));
         setStatus("ready");
-      } catch {
+      } catch (err) {
+        console.error("STEP 모델을 불러오지 못했습니다:", err);
         if (!cancelled) setStatus("error");
       }
     })();
