@@ -12,7 +12,7 @@ const stats = [
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-bg pt-20 pb-20 md:pt-24">
+    <section className="relative flex min-h-[92dvh] items-center overflow-hidden bg-bg pt-20 pb-20 md:pt-24">
       <Parallax
         y={[-60, 60]}
         className="pointer-events-none absolute -top-32 right-[-10%] h-[28rem] w-[28rem] rounded-full bg-mint/25 blur-3xl"

@@ -99,7 +99,7 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
   return (
     <section className="bg-bg">
       <ChatSidebarProvider>
-        <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-7xl">
+        <div className="mx-auto flex h-[calc(100dvh-4rem)] max-w-7xl">
           <ChatSidebar channels={visibleChannels} initialUnreadChannelIds={unreadChannelIds} />
           <div className="flex min-w-0 flex-1 flex-col">{children}</div>
         </div>
