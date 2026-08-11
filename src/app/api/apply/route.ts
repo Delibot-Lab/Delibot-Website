@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendApplicationEmail } from "@/lib/mail";
 import { siteConfig } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 const VALID_TEAMS: readonly string[] = siteConfig.recruitTeams.map(
   (team) => team.label
@@ -17,6 +18,14 @@ export async function POST(req: NextRequest) {
   const user = claims?.claims;
   if (!user) {
     return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
+  }
+
+  const limited = rateLimit(`apply:${user.sub}`, { limit: 5, windowMs: 60 * 60 * 1000 });
+  if (!limited.ok) {
+    return NextResponse.json(
+      { error: "잠시 후 다시 시도해주세요." },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } }
+    );
   }
 
   const body = await req.json().catch(() => null);

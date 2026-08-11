@@ -1,9 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAllowedImageType, uploadBlogImage } from "@/lib/uploads";
+import { getCurrentUser } from "@/lib/supabase/session";
+import { rateLimit } from "@/lib/rate-limit";
 
 const MAX_SIZE = 8 * 1024 * 1024; // 8MB
 
 export async function POST(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
+  }
+
+  const limited = rateLimit(`upload:${user.id}`, { limit: 30, windowMs: 10 * 60 * 1000 });
+  if (!limited.ok) {
+    return NextResponse.json(
+      { error: "잠시 후 다시 시도해주세요." },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } }
+    );
+  }
+
   const form = await req.formData().catch(() => null);
   const file = form?.get("file");
 

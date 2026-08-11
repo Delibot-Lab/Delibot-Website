@@ -1,12 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createPost, isValidSlug } from "@/lib/posts";
+import { getCurrentUser } from "@/lib/supabase/session";
+import { rateLimit } from "@/lib/rate-limit";
 
 function str(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
 export async function POST(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
+  }
+
+  const limited = rateLimit(`create-post:${user.id}`, { limit: 10, windowMs: 60 * 60 * 1000 });
+  if (!limited.ok) {
+    return NextResponse.json(
+      { error: "잠시 후 다시 시도해주세요." },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } }
+    );
+  }
+
   const body = await req.json().catch(() => null);
 
   const slug = str(body?.slug);
