@@ -6,7 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const inputClass =
-  "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-sm outline-none focus:border-mint";
+  "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-base outline-none focus:border-mint";
 
 export function LoginForm() {
   const router = useRouter();

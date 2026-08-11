@@ -207,7 +207,7 @@ export function MessageComposer({
               void handleSend();
             }
           }}
-          className="max-h-32 min-h-[2.25rem] flex-1 resize-none rounded-xl border border-border bg-bg px-3 py-2 text-sm outline-none focus:border-mint"
+          className="max-h-32 min-h-[2.25rem] flex-1 resize-none rounded-xl border border-border bg-bg px-3 py-2 text-base outline-none focus:border-mint"
         />
 
         <button

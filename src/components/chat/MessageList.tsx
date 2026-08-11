@@ -128,7 +128,7 @@ export function MessageList({
                           }
                           if (e.key === "Escape") setEditingId(null);
                         }}
-                        className="w-full resize-none rounded-lg border border-border bg-bg px-2.5 py-1.5 text-sm outline-none focus:border-mint"
+                        className="w-full resize-none rounded-lg border border-border bg-bg px-2.5 py-1.5 text-base outline-none focus:border-mint"
                       />
                       <div className="flex items-center gap-2">
                         <button
