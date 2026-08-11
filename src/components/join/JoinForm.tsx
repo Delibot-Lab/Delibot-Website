@@ -119,6 +119,7 @@ export function JoinForm({ initialName = "" }: { initialName?: string }) {
       <Field label="이름">
         <input
           required
+          autoComplete="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className={inputClass}
@@ -130,6 +131,7 @@ export function JoinForm({ initialName = "" }: { initialName?: string }) {
           <input
             required
             type="tel"
+            autoComplete="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="010-1234-5678"
@@ -139,6 +141,7 @@ export function JoinForm({ initialName = "" }: { initialName?: string }) {
         <Field label="GitHub 아이디">
           <input
             required
+            autoComplete="off"
             value={githubId}
             onChange={(e) => setGithubId(e.target.value)}
             placeholder="github.com/아이디"

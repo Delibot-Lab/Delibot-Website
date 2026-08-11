@@ -1,26 +1,20 @@
 "use client";
 
 import { useState, type SyntheticEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const inputClass =
   "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-sm outline-none focus:border-mint";
 
-export function LoginForm() {
+export function ResetPasswordForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/";
-  const confirmFailed = searchParams.get("error") === "confirm_failed";
-
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(
-    confirmFailed ? "이메일 인증 링크가 만료되었거나 올바르지 않습니다." : null
-  );
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
 
   async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,51 +22,47 @@ export function LoginForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (signInError) {
-        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      if (updateError) {
+        setError(
+          updateError.message.includes("session")
+            ? "재설정 링크가 만료되었어요. 다시 요청해주세요."
+            : updateError.message
+        );
         return;
       }
-
-      router.push(next);
-      router.refresh();
+      setDone(true);
+      setTimeout(() => {
+        router.push("/");
+        router.refresh();
+      }, 1500);
     } finally {
       setLoading(false);
     }
   }
 
+  if (done) {
+    return (
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-6 text-center">
+        <p className="text-sm text-navy">비밀번호가 변경됐어요. 홈으로 이동할게요...</p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-4">
       <div>
-        <label htmlFor="email" className="text-sm font-medium text-navy">
-          이메일
-        </label>
-        <input
-          id="email"
-          type="email"
-          required
-          autoFocus
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className={inputClass}
-        />
-      </div>
-
-      <div>
         <label htmlFor="password" className="text-sm font-medium text-navy">
-          비밀번호
+          새 비밀번호
         </label>
         <div className="relative">
           <input
             id="password"
             type={showPassword ? "text" : "password"}
             required
-            autoComplete="current-password"
+            minLength={8}
+            autoComplete="new-password"
+            autoFocus
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={`${inputClass} pr-11`}
@@ -86,11 +76,8 @@ export function LoginForm() {
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
+        <p className="mt-1 text-xs text-muted">8자 이상 입력해주세요.</p>
       </div>
-
-      <a href="/forgot-password" className="-mt-2 text-right text-xs text-muted hover:text-navy">
-        비밀번호를 잊으셨나요?
-      </a>
 
       {error && <p className="text-sm text-danger">{error}</p>}
 
@@ -99,12 +86,8 @@ export function LoginForm() {
         disabled={loading}
         className="rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-60"
       >
-        {loading ? "확인 중..." : "로그인"}
+        {loading ? "변경 중..." : "비밀번호 변경"}
       </button>
-
-      <a href="/signup" className="text-center text-xs text-muted hover:text-navy">
-        아직 회원이 아니신가요? 회원가입
-      </a>
     </form>
   );
 }

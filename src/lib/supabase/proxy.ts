@@ -18,7 +18,8 @@ function isLoginRequiredPath(pathname: string): boolean {
     pathname === "/blog/write" ||
     pathname === "/api/posts" ||
     pathname === "/api/posts/images" ||
-    pathname === "/profile"
+    pathname === "/profile" ||
+    pathname === "/reset-password"
   );
 }
 

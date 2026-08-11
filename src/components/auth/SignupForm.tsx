@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type SyntheticEvent } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const SCHOOL_DOMAIN = "@cbs-h.cbe.go.kr";
@@ -15,6 +16,7 @@ export function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -67,6 +69,7 @@ export function SignupForm() {
         <input
           id="name"
           required
+          autoComplete="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className={inputClass}
@@ -81,6 +84,7 @@ export function SignupForm() {
           id="birthday"
           type="date"
           required
+          autoComplete="bday"
           value={birthday}
           onChange={(e) => setBirthday(e.target.value)}
           className={inputClass}
@@ -98,6 +102,7 @@ export function SignupForm() {
           id="email"
           type="email"
           required
+          autoComplete="email"
           placeholder={`example${SCHOOL_DOMAIN}`}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -109,15 +114,27 @@ export function SignupForm() {
         <label htmlFor="password" className="text-sm font-medium text-navy">
           비밀번호
         </label>
-        <input
-          id="password"
-          type="password"
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className={inputClass}
-        />
+        <div className="relative">
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            required
+            minLength={8}
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`${inputClass} pr-11`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-navy"
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+        <p className="mt-1 text-xs text-muted">8자 이상 입력해주세요.</p>
       </div>
 
       {error && <p className="text-sm text-danger">{error}</p>}
