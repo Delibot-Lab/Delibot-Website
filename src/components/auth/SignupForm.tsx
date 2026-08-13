@@ -3,6 +3,7 @@
 import { useState, type SyntheticEvent } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { siteConfig } from "@/lib/site";
 
 const SCHOOL_DOMAIN = "@cbs-h.cbe.go.kr";
 const inputClass =
@@ -33,7 +34,10 @@ export function SignupForm() {
       const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { name, birthday } },
+        options: {
+          data: { name, birthday },
+          emailRedirectTo: `${siteConfig.url}/auth/confirm`,
+        },
       });
 
       if (signUpError) {
