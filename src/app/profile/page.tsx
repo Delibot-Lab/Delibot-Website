@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { getCurrentUser } from "@/lib/supabase/session";
 import { createClient } from "@/lib/supabase/server";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
+import { DeleteAccountButton } from "@/components/profile/DeleteAccountButton";
 
 export const metadata: Metadata = {
   title: "내 프로필",
@@ -48,6 +49,7 @@ export default async function ProfilePage() {
               <span className="font-medium text-navy">{profile.birthday}</span>
             </div>
           </div>
+          <DeleteAccountButton />
         </Card>
       </Container>
     </section>
