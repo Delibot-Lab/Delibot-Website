@@ -44,7 +44,7 @@ export function DeleteAccountButton() {
         type="button"
         onClick={handleDelete}
         disabled={deleting}
-        className="text-xs font-medium text-danger hover:underline disabled:opacity-60"
+        className="rounded-full border border-danger px-6 py-2.5 text-sm font-semibold text-danger transition-colors hover:bg-danger/10 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {deleting ? "삭제 중..." : "계정 삭제"}
       </button>
