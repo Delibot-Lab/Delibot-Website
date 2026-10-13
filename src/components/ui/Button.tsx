@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 const variantMap = {
-  primary: "bg-navy text-white",
-  secondary: "bg-mint text-white",
-  ghost: "border border-border bg-surface text-navy",
+  primary: "bg-mint-strong text-white shadow-[0_10px_25px_-14px_rgba(61,131,102,.75)] hover:bg-[#327158]",
+  secondary: "bg-mint text-[#173b2e]",
+  ghost: "border border-black/[.06] bg-white text-navy shadow-sm",
 } as const;
 
 export function Button({
@@ -19,7 +19,7 @@ export function Button({
   external?: boolean;
   className?: string;
 }) {
-  const cls = `inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-transform hover:scale-[1.03] ${variantMap[variant]} ${className}`;
+  const cls = `inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 ${variantMap[variant]} ${className}`;
 
   if (external) {
     return (

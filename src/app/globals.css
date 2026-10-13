@@ -107,6 +107,23 @@ body {
   font-family: var(--font-sans);
 }
 
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-mint) 72%, white);
+  outline-offset: 3px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(67, 185, 140, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(67, 185, 140, 0.055) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
 ::selection {
   background: var(--color-mint);
   color: #ffffff;

@@ -1,20 +1,16 @@
 import { Hero } from "@/components/sections/Hero";
-import { RobotOverview } from "@/components/sections/RobotOverview";
-import { HowItWorks } from "@/components/sections/HowItWorks";
-import { CampusUseCase } from "@/components/sections/CampusUseCase";
-import { JoinTeaser } from "@/components/sections/JoinTeaser";
-import { LabTeaser } from "@/components/sections/LabTeaser";
+import { ScrollFilm } from "@/components/sections/ScrollFilm";
+import { BlogInvitation } from "@/components/sections/BlogInvitation";
 import { CtaSection } from "@/components/sections/CtaSection";
+import { getPublicTeamProfiles } from "@/lib/team-server";
 
-export default function Home() {
+export default async function Home() {
+  const members = await getPublicTeamProfiles();
   return (
     <>
       <Hero />
-      <RobotOverview />
-      <HowItWorks />
-      <CampusUseCase />
-      <JoinTeaser />
-      <LabTeaser />
+      <ScrollFilm members={members} />
+      <BlogInvitation />
       <CtaSection />
     </>
   );

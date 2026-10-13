@@ -16,7 +16,6 @@ const baseDirectives = [
   "form-action 'self'",
 ];
 
-// 사이트 전역: eval() 계열을 막는 엄격한 CSP.
 const csp = [
   ...baseDirectives,
   "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
@@ -46,6 +45,13 @@ const commonHeaders = [
 
 const nextConfig: NextConfig = {
   async headers() {
+    // React/Next 개발 모드는 디버깅 스택 복원 과정에서 eval()을 사용한다. 일부
+    // 브라우저는 unsafe-eval을 넣은 CSP도 먼저 차단하므로 개발 서버에는 CSP를
+    // 보내지 않고, 실제 배포 빌드에만 엄격한 정책을 적용한다.
+    if (process.env.NODE_ENV === "development") {
+      return [{ source: "/:path*", headers: commonHeaders }];
+    }
+
     return [
       {
         source: "/wasm/:path*",

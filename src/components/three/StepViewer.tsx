@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useEffect, useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Bounds, OrbitControls } from "@react-three/drei";
+import type { MotionValue } from "motion/react";
 import * as THREE from "three";
 
 type OcctMesh = {
@@ -53,7 +54,20 @@ function buildGroup(meshes: OcctMesh[]): THREE.Group {
   return group;
 }
 
-export function StepViewer({ url }: { url: string }) {
+function ScrollModel({ group, progress }: { group: THREE.Group; progress?: MotionValue<number> }) {
+  const ref = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (!ref.current || !progress) return;
+    const value = progress.get();
+    ref.current.rotation.y = -0.65 + value * 1.3;
+    ref.current.rotation.x = 0.18 - value * 0.3;
+  });
+
+  return <primitive ref={ref} object={group} />;
+}
+
+export function StepViewer({ url, scrollProgress }: { url: string; scrollProgress?: MotionValue<number> }) {
   const [group, setGroup] = useState<THREE.Group | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
     "loading"
@@ -126,8 +140,8 @@ export function StepViewer({ url }: { url: string }) {
           <ambientLight intensity={0.7} />
           <directionalLight position={[5, 8, 5]} intensity={1.1} />
           <directionalLight position={[-5, -3, -5]} intensity={0.3} />
-          <Bounds fit clip observe margin={1.3}>
-            <primitive object={group} />
+          <Bounds fit clip margin={1.3}>
+            <ScrollModel group={group} progress={scrollProgress} />
           </Bounds>
           <OrbitControls makeDefault enableDamping />
         </Canvas>

@@ -18,7 +18,7 @@ const parts = [
   {
     tag: "두뇌",
     icon: Cpu,
-    color: "teal" as const,
+    color: "mint" as const,
     title: "STM32F401CCU6",
     description:
       "ARM Cortex-M4F 기반 컨트롤러가 5ms(200Hz)마다 제어 루프를 돌며 로봇을 지휘합니다.",
@@ -26,7 +26,7 @@ const parts = [
   {
     tag: "구동계",
     icon: Settings2,
-    color: "peach" as const,
+    color: "mint" as const,
     title: "L298N 모터 드라이버",
     description:
       "PWM 신호로 두 바퀴의 속도와 회전 방향을 정밀하게 구동합니다.",
@@ -46,14 +46,14 @@ export function RobotOverview() {
     <Section
       id="robot"
       tone="surface"
-      eyebrow="ROBOT"
-      title="Delibot을 움직이는 하드웨어"
-      description="캠퍼스 바닥과 문턱, 코너를 안정적으로 지나가기 위해 구동부터 센서까지 직접 설계했습니다."
+      eyebrow="REAL BUILD · 실제 제작물"
+      title="상상이 아니라, 지금 만들고 있습니다"
+      description="아래 이미지는 실제 Delibot 프로젝트에서 제작하고 사용하는 하드웨어입니다. 캠퍼스 바닥과 문턱, 코너를 안정적으로 지나가기 위해 구동부터 센서까지 직접 설계했습니다."
     >
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {parts.map((part, i) => (
           <Reveal key={part.title} delay={i * 0.08}>
-            <Card className="h-full">
+            <Card tone="bg" className="h-full">
               <IconBadge icon={part.icon} color={part.color} />
               <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">
                 {part.tag}
@@ -85,7 +85,7 @@ export function RobotOverview() {
             />
           </Parallax>
           <div>
-            <IconBadge icon={BatteryCharging} color="peach" />
+            <IconBadge icon={BatteryCharging} color="mint" />
             <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">
               전원
             </p>

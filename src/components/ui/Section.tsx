@@ -26,22 +26,22 @@ export function Section({
     align === "center" ? "items-center text-center" : "items-start text-left";
 
   return (
-    <section id={id} className={`${toneClass} py-24 md:py-32`}>
+    <section id={id} className={`${toneClass} py-28 md:py-40`}>
       <Container>
         {(eyebrow || title || description) && (
-          <Reveal className={`mb-14 flex flex-col gap-4 ${alignClass}`}>
+          <Reveal className={`mb-16 flex flex-col gap-5 ${alignClass}`}>
             {eyebrow && (
-              <span className="inline-block w-fit rounded-full bg-mint/15 px-4 py-1 text-sm font-semibold text-mint-strong">
+              <span className="inline-block w-fit text-xs font-extrabold tracking-[.18em] text-mint-strong">
                 {eyebrow}
               </span>
             )}
             {title && (
-              <h2 className="text-3xl font-bold tracking-tight text-navy md:text-5xl">
+              <h2 className="max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-[-.045em] text-[#191f28] md:text-6xl">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="max-w-2xl text-base leading-relaxed text-muted md:text-lg">
+              <p className="max-w-2xl text-base font-medium leading-relaxed text-muted md:text-lg">
                 {description}
               </p>
             )}

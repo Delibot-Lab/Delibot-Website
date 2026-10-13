@@ -6,6 +6,8 @@ import { getCurrentUser } from "@/lib/supabase/session";
 import { createClient } from "@/lib/supabase/server";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { DeleteAccountButton } from "@/components/profile/DeleteAccountButton";
+import { PublicProfileEditor } from "@/components/profile/PublicProfileEditor";
+import { teamProfileSelect, type TeamProfile } from "@/lib/team";
 
 export const metadata: Metadata = {
   title: "내 프로필",
@@ -17,19 +19,18 @@ export default async function ProfilePage() {
   if (!user) notFound();
 
   const supabase = await createClient();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("name, birthday, avatar_url")
-    .eq("id", user.id)
-    .single();
+  const [{ data: profile }, { data: publicProfile }] = await Promise.all([
+    supabase.from("profiles").select("name, birthday, avatar_url").eq("id", user.id).single(),
+    supabase.from("team_profiles").select(teamProfileSelect).eq("user_id", user.id).maybeSingle(),
+  ]);
 
   if (!profile) notFound();
 
   return (
     <section className="bg-bg py-16 md:py-24">
-      <Container className="max-w-md">
+      <Container className="max-w-4xl">
         <h1 className="mb-8 text-center text-2xl font-bold text-navy">내 프로필</h1>
-        <Card tone="surface" className="flex flex-col items-center gap-6">
+        <Card tone="surface" className="mx-auto flex max-w-md flex-col items-center gap-6">
           <AvatarUploader
             userId={user.id}
             name={profile.name}
@@ -51,6 +52,7 @@ export default async function ProfilePage() {
           </div>
           <DeleteAccountButton />
         </Card>
+        <PublicProfileEditor userId={user.id} name={profile.name} email={user.email} avatarUrl={profile.avatar_url} initial={(publicProfile as unknown as TeamProfile | null) ?? null} />
       </Container>
     </section>
   );

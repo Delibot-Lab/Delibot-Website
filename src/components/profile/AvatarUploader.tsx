@@ -68,6 +68,9 @@ export function AvatarUploader({
         .eq("id", userId);
       if (updateError) throw updateError;
 
+      // 공개 프로필을 이미 만든 팀원이라면 같은 사진을 함께 갱신한다.
+      await supabase.from("team_profiles").update({ avatar_url: url }).eq("user_id", userId);
+
       setAvatarUrl(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "업로드에 실패했습니다.");

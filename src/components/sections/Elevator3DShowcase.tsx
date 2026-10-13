@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { useReducedMotion, useScroll } from "motion/react";
 
 const StepViewer = dynamic(
   () => import("@/components/three/StepViewer").then((m) => m.StepViewer),
@@ -18,6 +19,8 @@ const StepViewer = dynamic(
 export function Elevator3DShowcase() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
 
   useEffect(() => {
     const el = ref.current;
@@ -40,7 +43,7 @@ export function Elevator3DShowcase() {
   return (
     <div ref={ref} className="h-full w-full">
       {visible ? (
-        <StepViewer url="/models/elevator-controller.step" />
+        <StepViewer url="/models/elevator-controller.step" scrollProgress={reduced ? undefined : scrollYProgress} />
       ) : (
         <div className="flex h-full w-full items-center justify-center text-sm text-muted">
           스크롤하면 3D 모델을 불러옵니다

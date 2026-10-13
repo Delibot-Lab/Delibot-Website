@@ -1,15 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/lib/site";
 
 export function Footer() {
+  const pathname = usePathname();
+  const en = pathname === "/en" || pathname.startsWith("/en/");
   return (
-    <footer className="border-t border-border bg-surface">
-      <div className="mx-auto max-w-6xl px-5 py-14 md:px-8">
+    <footer className="border-t border-black/[.05] bg-white">
+      <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-20">
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
           <div className="max-w-sm">
-            <p className="text-lg font-bold text-navy">{siteConfig.name}</p>
+            <p className="text-2xl font-extrabold tracking-[-.03em] text-[#191f28]">{siteConfig.name}</p>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              {siteConfig.description}
+              {en ? "An autonomous campus delivery robot built by CBSH DeliBot Lab." : siteConfig.description}
             </p>
             <a
               href={`mailto:${siteConfig.contactEmail}`}
@@ -22,7 +27,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                사이트
+                {en ? "Site" : "사이트"}
               </p>
               <ul className="mt-3 space-y-2">
                 {siteConfig.nav.map((item) => (
@@ -31,7 +36,7 @@ export function Footer() {
                       href={item.href}
                       className="text-sm text-ink hover:text-mint-strong"
                     >
-                      {item.label}
+                      {en ? ({ 소개: "About", 블로그: "Stories", "팀원 모집": "Join" } as Record<string, string>)[item.label] ?? item.label : item.label}
                     </Link>
                   </li>
                 ))}
@@ -40,7 +45,7 @@ export function Footer() {
 
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                프로젝트
+                {en ? "Projects" : "프로젝트"}
               </p>
               <ul className="mt-3 space-y-2">
                 {siteConfig.repos.map((repo) => (
@@ -67,7 +72,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="font-medium text-navy hover:text-mint-strong">
-              개인정보 안내
+              {en ? "Privacy" : "개인정보 안내"}
             </Link>
             <a
               href={siteConfig.githubOrgUrl}
