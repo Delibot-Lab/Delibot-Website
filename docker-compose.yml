@@ -20,6 +20,7 @@ services:
       dockerfile: Dockerfile.web
     restart: unless-stopped
     environment:
+      HOSTNAME: 0.0.0.0
       API_INTERNAL_URL: http://127.0.0.1:8080
       API_BIND: 0.0.0.0:8080
       APP_URL: ${APP_URL:-https://delibot-lab.server.cbgpu.com}
