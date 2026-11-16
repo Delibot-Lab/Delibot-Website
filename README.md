@@ -117,7 +117,7 @@ Please report suspected vulnerabilities privately to the maintainers instead of 
 
 ## Deployment
 
-Production uses Docker Compose with two containers: an application container running both the Next.js web process and the Axum API, plus PostgreSQL. The processes remain isolated by port and responsibility while sharing a deployment image that fits CBGPU's constrained builder. Persistent volumes hold PostgreSQL data and user uploads. See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for the CBGPU procedure and required environment variables.
+Production uses Docker Compose with an application container running both the Next.js web process and the Axum API, PostgreSQL, and a one-shot secret initializer. The initializer creates a strong database password directly inside a private persistent volume, so no database credential is committed or manually configured. Persistent volumes hold PostgreSQL data, the generated database secret, and user uploads. See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for the CBGPU procedure and optional environment variables.
 
 ## License
 

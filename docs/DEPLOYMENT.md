@@ -4,6 +4,7 @@ The production stack runs as one CBGPU Compose project:
 
 - `web`: one application container running the Next.js standalone server on port 3000 and Rust/Axum on port 8080
 - `db`: PostgreSQL 17 on the private Compose network
+- `secret-init`: a one-shot Alpine container that creates the database password in a private persistent volume
 
 CBGPU routes public traffic to `web`. Next.js forwards `/api/v1/*` and `/uploads/*` to the colocated Axum process, so browsers use one origin and port 8080 is not exposed publicly.
 
@@ -19,11 +20,12 @@ Container port: 3000
 Access scope: public
 ```
 
-Configure secret values in the CBGPU project settings. Never commit them.
+The database password is generated automatically on first deployment and kept in the private `db_secrets` volume. It does not need a CBGPU environment variable.
+
+Configure the following optional integration values in the CBGPU project settings when those features are needed. Never commit them.
 
 ```dotenv
-POSTGRES_PASSWORD=<random high-entropy password>
-APP_URL=https://<project>.server.cbgpu.com
+APP_URL=https://delibot-lab.server.cbgpu.com
 COOKIE_SECURE=true
 
 GMAIL_USER=<transactional sender address>
@@ -37,7 +39,7 @@ GITHUB_REPO=Delibot-Website
 GITHUB_BRANCH=main
 ```
 
-`POSTGRES_PASSWORD` is mandatory. Mail and GitHub values are required for email delivery and browser-based blog editing respectively.
+`APP_URL` and `COOKIE_SECURE` already have production-safe defaults in Compose. Mail and GitHub values are required for email delivery and browser-based blog editing respectively.
 
 ## First account
 
@@ -61,11 +63,11 @@ The repository already contains the existing Markdown blog post under `content/b
 
 After each deployment:
 
-1. Wait until both Compose services are healthy. The application health check verifies both Next.js and Axum.
+1. Wait until the secret initializer completes and both long-running Compose services are healthy. The application health check verifies both Next.js and Axum.
 2. Open `/api/v1/health` through the public site and confirm an HTTP 200 response.
 3. Test signup, verification, login, profile editing, avatar upload, application submission, and logout.
 4. Run `npm audit` and `cargo check` locally before promoting a revision.
-5. Confirm that both `postgres_data` and `uploads_data` remain attached after a redeploy.
+5. Confirm that `postgres_data`, `uploads_data`, and `db_secrets` remain attached after a redeploy.
 
 ## Rollback
 
