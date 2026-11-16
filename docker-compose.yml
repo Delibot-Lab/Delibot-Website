@@ -10,6 +10,7 @@ services:
         if [ ! -s /secrets/postgres_password ]; then
           od -An -N32 -tx1 /dev/urandom | tr -d ' \n' > /secrets/postgres_password
         fi
+        chmod 0444 /secrets/postgres_password
     volumes:
       - db_secrets:/secrets
 
