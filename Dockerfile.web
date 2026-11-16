@@ -36,6 +36,7 @@ RUN apt-get update \
     && mkdir -p /data/uploads \
     && chown -R delibot:delibot /data
 COPY --from=web-builder /tmp/delibot-api /usr/local/bin/delibot-api
+COPY --from=api-builder --chown=delibot:delibot /app/db /db
 COPY --from=web-builder --chown=delibot:delibot /app/public ./public
 COPY --from=web-builder --chown=delibot:delibot /app/.next/standalone ./
 COPY --from=web-builder --chown=delibot:delibot /app/.next/static ./.next/static
