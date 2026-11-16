@@ -52,6 +52,7 @@ const nextConfig: NextConfig = {
   // 만들면 EAGAIN으로 실패한다. 페이지 수에 충분한 두 워커로 고정한다.
   experimental: {
     cpus: process.env.CBGPU_CONSTRAINED_BUILD === "1" ? 1 : 2,
+    webpackMemoryOptimizations: process.env.CBGPU_CONSTRAINED_BUILD === "1",
   },
   async rewrites() {
     return [
