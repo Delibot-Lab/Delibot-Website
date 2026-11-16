@@ -2,11 +2,10 @@
 
 The production stack runs as one CBGPU Compose project:
 
-- `web`: Next.js standalone server on port 3000
-- `api`: Rust/Axum service on port 8080
+- `web`: one application container running the Next.js standalone server on port 3000 and Rust/Axum on port 8080
 - `db`: PostgreSQL 17 on the private Compose network
 
-CBGPU routes public traffic to `web`. Next.js forwards `/api/v1/*` and `/uploads/*` to the internal Axum service, so browsers use one origin and the API is not exposed separately.
+CBGPU routes public traffic to `web`. Next.js forwards `/api/v1/*` and `/uploads/*` to the colocated Axum process, so browsers use one origin and port 8080 is not exposed publicly.
 
 ## Required project settings
 
@@ -62,7 +61,7 @@ The repository already contains the existing Markdown blog post under `content/b
 
 After each deployment:
 
-1. Wait until all three Compose services are healthy.
+1. Wait until both Compose services are healthy. The application health check verifies both Next.js and Axum.
 2. Open `/api/v1/health` through the public site and confirm an HTTP 200 response.
 3. Test signup, verification, login, profile editing, avatar upload, application submission, and logout.
 4. Run `npm audit` and `cargo check` locally before promoting a revision.
