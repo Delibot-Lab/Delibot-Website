@@ -1,28 +1,40 @@
-FROM api_image AS api-ready
+FROM rust:1.97-bookworm AS api-builder
+WORKDIR /app
+COPY backend/Cargo.toml backend/Cargo.lock ./backend/
+COPY backend/src ./backend/src
+COPY db ./db
+WORKDIR /app/backend
+RUN cargo build --locked --release
 
-FROM node:22-alpine AS dependencies
+FROM node:22-bookworm-slim AS dependencies
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-FROM node:22-alpine AS builder
+FROM node:22-bookworm-slim AS web-builder
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV API_INTERNAL_URL=http://api:8080
 COPY --from=dependencies /app/node_modules ./node_modules
-COPY --from=api-ready /build-complete /tmp/api-build-complete
 COPY . .
 RUN npm run build
 
-FROM node:22-alpine AS runtime
+FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-USER nextjs
-EXPOSE 3000
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 10001 delibot \
+    && useradd --system --uid 10001 --gid delibot --create-home delibot \
+    && mkdir -p /data/uploads \
+    && chown -R delibot:delibot /data
+COPY --from=api-builder /app/backend/target/release/delibot-api /usr/local/bin/delibot-api
+COPY --from=web-builder --chown=delibot:delibot /app/public ./public
+COPY --from=web-builder --chown=delibot:delibot /app/.next/standalone ./
+COPY --from=web-builder --chown=delibot:delibot /app/.next/static ./.next/static
+USER delibot
+EXPOSE 3000 8080
 CMD ["node", "server.js"]
