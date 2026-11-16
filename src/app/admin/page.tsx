@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
-import { getCurrentUser } from "@/lib/supabase/session";
-import { createClient } from "@/lib/supabase/server";
+import { apiFetch, getCurrentUser } from "@/lib/api-server";
 import { getAllPosts } from "@/lib/posts";
 import { AdminDashboard, type AdminMember, type AdminPost } from "@/components/admin/AdminDashboard";
 
@@ -16,12 +15,11 @@ export default async function AdminPage() {
   const user = await getCurrentUser();
   if (!user?.isAdmin) notFound();
 
-  const supabase = await createClient();
-  const [{ data: membersData, error }, posts] = await Promise.all([
-    supabase.rpc("admin_list_members"),
+  const [membersResponse, posts] = await Promise.all([
+    apiFetch("/api/v1/admin/members"),
     getAllPosts().catch(() => [] as AdminPost[]),
   ]);
-  const members = (membersData ?? []) as AdminMember[];
+  const members = membersResponse.ok ? await membersResponse.json() as AdminMember[] : [];
 
   return (
     <section className="bg-bg py-16 md:py-24">
@@ -44,8 +42,8 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        {error ? (
-          <p className="text-sm text-danger">회원 목록을 불러오지 못했습니다: {error.message}</p>
+        {!membersResponse.ok ? (
+          <p className="text-sm text-danger">회원 목록을 불러오지 못했습니다.</p>
         ) : (
           <AdminDashboard members={members} posts={posts as AdminPost[]} currentUserId={user.id} />
         )}

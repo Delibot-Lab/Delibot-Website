@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
-import { initials, safeExternalUrl, teamProfileSelect, type TeamProfile } from "@/lib/team";
+import { apiFetch } from "@/lib/api-server";
+import { initials, safeExternalUrl, type TeamProfile } from "@/lib/team";
 
 export async function TeamProfileView({ slug, locale = "ko" }: { slug: string; locale?: "ko" | "en" }) {
   const en = locale === "en";
-  const supabase = await createClient();
-  const { data } = await supabase.from("team_profiles").select(teamProfileSelect).eq("slug", slug).eq("is_public", true).maybeSingle();
-  if (!data) notFound();
-  const member = data as unknown as TeamProfile;
+  const response = await apiFetch(`/api/v1/team/${encodeURIComponent(slug)}`);
+  if (!response.ok) notFound();
+  const member = await response.json() as TeamProfile;
   const links = [
     { label: member.contact_email ?? "", href: member.contact_email ? `mailto:${member.contact_email}` : null, icon: ExternalLink },
     { label: "GitHub", href: safeExternalUrl(member.github_url), icon: ExternalLink },

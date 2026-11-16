@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { Camera } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 const MAX_DIMENSION = 512;
 
@@ -32,11 +31,9 @@ function initials(name: string): string {
 }
 
 export function AvatarUploader({
-  userId,
   name,
   initialAvatarUrl,
 }: {
-  userId: string;
   name: string;
   initialAvatarUrl: string | null;
 }) {
@@ -50,28 +47,12 @@ export function AvatarUploader({
     setError(null);
     try {
       const processed = await cropToSquareAndResize(file);
-      const supabase = createClient();
-      const path = `${userId}/avatar.webp`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(path, processed, { upsert: true, contentType: "image/webp" });
-      if (uploadError) throw uploadError;
-
-      const { data: publicUrlData } = supabase.storage.from("avatars").getPublicUrl(path);
-      // 캐시 무효화를 위해 타임스탬프를 붙인다 (같은 경로에 upsert했기 때문).
-      const url = `${publicUrlData.publicUrl}?t=${Date.now()}`;
-
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ avatar_url: url })
-        .eq("id", userId);
-      if (updateError) throw updateError;
-
-      // 공개 프로필을 이미 만든 팀원이라면 같은 사진을 함께 갱신한다.
-      await supabase.from("team_profiles").update({ avatar_url: url }).eq("user_id", userId);
-
-      setAvatarUrl(url);
+      const form = new FormData();
+      form.set("file", processed);
+      const response = await fetch("/api/v1/profile/avatar", { method: "POST", credentials: "include", body: form });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.error ?? "업로드에 실패했습니다.");
+      setAvatarUrl(`${data.url}?t=${Date.now()}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "업로드에 실패했습니다.");
     } finally {

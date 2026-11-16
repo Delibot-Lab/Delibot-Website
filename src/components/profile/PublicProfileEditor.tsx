@@ -2,13 +2,12 @@
 
 import { useState, type FormEvent } from "react";
 import { Check, Eye, EyeOff, Save } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import type { TeamProfile } from "@/lib/team";
 import { siteConfig } from "@/lib/site";
 
 const inputClass = "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-sm outline-none transition focus:border-mint";
 
-export function PublicProfileEditor({ userId, name, email, avatarUrl, initial }: { userId: string; name: string; email: string; avatarUrl: string | null; initial: TeamProfile | null }) {
+export function PublicProfileEditor({ name, email, initial }: { name: string; email: string; initial: TeamProfile | null }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +27,6 @@ export function PublicProfileEditor({ userId, name, email, avatarUrl, initial }:
     }
 
     const payload = {
-      user_id: userId,
       slug,
       display_name: text("display_name"),
       role_ko: text("role_ko"),
@@ -37,18 +35,23 @@ export function PublicProfileEditor({ userId, name, email, avatarUrl, initial }:
       bio_ko: text("bio_ko"),
       bio_en: text("bio_en"),
       skills: text("skills").split(",").map((item) => item.trim()).filter(Boolean).slice(0, 12),
-      avatar_url: avatarUrl,
       contact_email: text("contact_email") || null,
       orcid: text("orcid") || null,
       linkedin_url: text("linkedin_url") || null,
       github_url: text("github_url") || null,
       website_url: text("website_url") || null,
       is_public: form.get("is_public") === "on",
-      updated_at: new Date().toISOString(),
     };
-    const { error: saveError } = await createClient().from("team_profiles").upsert(payload, { onConflict: "user_id" });
-    if (saveError) setError(saveError.code === "23505" ? "이미 사용 중인 프로필 주소예요." : saveError.message);
-    else setMessage("공개 프로필을 저장했습니다.");
+    const response = await fetch("/api/v1/profile", {
+      method: "PUT",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      setError(response.status === 409 ? "이미 사용 중인 프로필 주소예요." : data?.error ?? "프로필을 저장하지 못했습니다.");
+    } else setMessage("공개 프로필을 저장했습니다.");
     setSaving(false);
   }
 

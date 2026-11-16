@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createPost, isValidSlug } from "@/lib/posts";
-import { getCurrentUser } from "@/lib/supabase/session";
+import { getCurrentUser } from "@/lib/api-server";
 import { rateLimit } from "@/lib/rate-limit";
 
 function str(value: unknown): string {

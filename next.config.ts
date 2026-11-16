@@ -8,7 +8,7 @@ const baseDirectives = [
   // 제한하면 이미 발행된 글이 깨지므로 https 이미지는 호스트 제한 없이 허용한다.
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://raw.githubusercontent.com",
+  "connect-src 'self' https://raw.githubusercontent.com",
   "worker-src 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",
@@ -44,6 +44,24 @@ const commonHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  // CBGPU의 제한된 빌드 컨테이너에서 호스트 CPU 수만큼(현재 33개) 프로세스를
+  // 만들면 EAGAIN으로 실패한다. 페이지 수에 충분한 두 워커로 고정한다.
+  experimental: {
+    cpus: 2,
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8080"}/api/v1/:path*`,
+      },
+      {
+        source: "/uploads/:path*",
+        destination: `${process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8080"}/uploads/:path*`,
+      },
+    ];
+  },
   async headers() {
     // React/Next 개발 모드는 디버깅 스택 복원 과정에서 eval()을 사용한다. 일부
     // 브라우저는 unsafe-eval을 넣은 CSP도 먼저 차단하므로 개발 서버에는 CSP를

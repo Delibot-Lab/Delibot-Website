@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { BackLink } from "@/components/ui/BackLink";
 import { PostForm } from "@/components/blog/PostForm";
-import { getCurrentUser } from "@/lib/supabase/session";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/api-server";
 
 export const metadata: Metadata = {
   title: "새 글 작성",
@@ -12,16 +11,7 @@ export const metadata: Metadata = {
 
 export default async function WritePostPage() {
   const user = await getCurrentUser();
-  let defaultAuthor: string | undefined;
-  if (user) {
-    const supabase = await createClient();
-    const { data } = await supabase
-      .from("profiles")
-      .select("name")
-      .eq("id", user.id)
-      .single();
-    defaultAuthor = data?.name ?? undefined;
-  }
+  const defaultAuthor = user?.name;
 
   return (
     <section className="bg-bg py-16 md:py-24">

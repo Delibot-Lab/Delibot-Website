@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MessageSquare, Pencil, Trash2, Check, X } from "lucide-react";
-import { formatMessageTime, type ChatMessage, type MessageAttachment } from "@/lib/supabase/chat";
+import { formatMessageTime, type ChatMessage, type MessageAttachment } from "@/lib/chat";
 import { MessageContent } from "./MessageContent";
 import { AttachmentPreview } from "./AttachmentPreview";
 import { Avatar } from "./Avatar";

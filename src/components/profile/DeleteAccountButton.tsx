@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 
 export function DeleteAccountButton() {
@@ -24,13 +23,12 @@ export function DeleteAccountButton() {
     setError(null);
     setDeleting(true);
     try {
-      const supabase = createClient();
-      const { error: rpcError } = await supabase.rpc("delete_own_account");
-      if (rpcError) {
-        setError(rpcError.message);
+      const response = await fetch("/api/v1/profile", { method: "DELETE", credentials: "include" });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "계정을 삭제하지 못했습니다.");
         return;
       }
-      await supabase.auth.signOut();
       router.push("/");
       router.refresh();
     } finally {

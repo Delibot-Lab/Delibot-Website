@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAllowedImageType, uploadBlogImage } from "@/lib/uploads";
-import { getCurrentUser } from "@/lib/supabase/session";
+import { getCurrentUser } from "@/lib/api-server";
 import { rateLimit } from "@/lib/rate-limit";
 
 const MAX_SIZE = 8 * 1024 * 1024; // 8MB

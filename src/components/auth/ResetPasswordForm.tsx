@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, type SyntheticEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 const inputClass =
   "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-base outline-none focus:border-mint";
 
 export function ResetPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,14 +21,14 @@ export function ResetPasswordForm() {
     setError(null);
     setLoading(true);
     try {
-      const supabase = createClient();
-      const { error: updateError } = await supabase.auth.updateUser({ password });
-      if (updateError) {
-        setError(
-          updateError.message.includes("session")
-            ? "재설정 링크가 만료되었어요. 다시 요청해주세요."
-            : updateError.message
-        );
+      const response = await fetch("/api/v1/auth/reset-password", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ password, token: searchParams.get("token") ?? "" }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "재설정 링크가 만료되었어요. 다시 요청해주세요.");
         return;
       }
       setDone(true);

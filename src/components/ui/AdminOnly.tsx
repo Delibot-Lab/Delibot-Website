@@ -1,6 +1,6 @@
 "use client";
 
-import { useCurrentUser } from "@/lib/supabase/useCurrentUser";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 /**
  * 정적/ISR 캐시되는 페이지에서 관리자 전용 UI를 안전하게 보여주기 위한 래퍼.

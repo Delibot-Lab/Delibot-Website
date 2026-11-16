@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { deletePost, isValidSlug, updatePost } from "@/lib/posts";
+import { getCurrentUser } from "@/lib/api-server";
 
 function str(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -10,6 +11,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  if (!(await getCurrentUser())) return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   const { slug } = await params;
   const body = await req.json().catch(() => null);
 
@@ -65,6 +67,7 @@ export async function DELETE(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   void request;
+  if (!(await getCurrentUser())) return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   const { slug } = await params;
 
   try {

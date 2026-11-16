@@ -14,7 +14,6 @@ import {
   UserX,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { createClient } from "@/lib/supabase/client";
 import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 
 export type AdminMember = {
@@ -82,13 +81,15 @@ export function AdminDashboard({
     setError(null);
     setTogglingId(member.id);
     try {
-      const supabase = createClient();
-      const { error: rpcError } = await supabase.rpc("toggle_admin", {
-        p_user_id: member.id,
-        p_is_admin: !member.is_admin,
+      const response = await fetch(`/api/v1/admin/members/${member.id}/admin`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ is_admin: !member.is_admin }),
       });
-      if (rpcError) {
-        setError(rpcError.message);
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "권한을 변경하지 못했습니다.");
         return;
       }
       setMembers((prev) =>
@@ -111,12 +112,10 @@ export function AdminDashboard({
     setError(null);
     setDeletingMemberId(member.id);
     try {
-      const supabase = createClient();
-      const { error: rpcError } = await supabase.rpc("admin_delete_member", {
-        p_user_id: member.id,
-      });
-      if (rpcError) {
-        setError(rpcError.message);
+      const response = await fetch(`/api/v1/admin/members/${member.id}`, { method: "DELETE", credentials: "include" });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "회원을 삭제하지 못했습니다.");
         return;
       }
       setMembers((prev) => prev.filter((m) => m.id !== member.id));

@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { JoinForm } from "@/components/join/JoinForm";
 import { siteConfig } from "@/lib/site";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/api-server";
 
 export const metadata: Metadata = {
   title: "팀원 모집",
@@ -11,19 +11,8 @@ export const metadata: Metadata = {
 };
 
 export default async function JoinPage() {
-  const supabase = await createClient();
-  const { data: claims } = await supabase.auth.getClaims();
-  const userId = claims?.claims.sub;
-
-  let initialName = "";
-  if (userId) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("name")
-      .eq("id", userId)
-      .single();
-    initialName = profile?.name ?? "";
-  }
+  const user = await getCurrentUser();
+  const initialName = user?.name ?? "";
 
   return (
     <>

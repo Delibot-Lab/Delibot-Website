@@ -2,8 +2,6 @@
 
 import { useState, type SyntheticEvent } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { siteConfig } from "@/lib/site";
 
 const SCHOOL_DOMAIN = "@cbs-h.cbe.go.kr";
 const inputClass =
@@ -30,18 +28,14 @@ export function SignupForm() {
 
     setLoading(true);
     try {
-      const supabase = createClient();
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { name, birthday },
-          emailRedirectTo: `${siteConfig.url}/auth/confirm`,
-        },
+      const response = await fetch("/api/v1/auth/signup", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password, name, birthday }),
       });
-
-      if (signUpError) {
-        setError(signUpError.message);
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "회원가입에 실패했습니다.");
         return;
       }
 

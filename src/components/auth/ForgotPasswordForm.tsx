@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, type SyntheticEvent } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { siteConfig } from "@/lib/site";
 
 const inputClass =
   "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-base outline-none focus:border-mint";
@@ -18,12 +16,14 @@ export function ForgotPasswordForm() {
     setError(null);
     setLoading(true);
     try {
-      const supabase = createClient();
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${siteConfig.url}/reset-password`,
+      const response = await fetch("/api/v1/auth/forgot-password", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email }),
       });
-      if (resetError) {
-        setError(resetError.message);
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "요청을 처리하지 못했습니다.");
         return;
       }
       setDone(true);

@@ -6,8 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { siteConfig } from "@/lib/site";
-import { createClient } from "@/lib/supabase/client";
-import { useCurrentUser } from "@/lib/supabase/useCurrentUser";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 const navTranslations: Record<string, string> = {
   소개: "About",
@@ -30,7 +29,7 @@ export function Navbar() {
   const headerOpacity = useTransform(scrollY, [0, 280], [1, 0]);
 
   async function handleLogout() {
-    await createClient().auth.signOut();
+    await fetch("/api/v1/auth/logout", { method: "POST", credentials: "include" });
     setOpen(false);
     router.push("/");
     router.refresh();

@@ -3,7 +3,6 @@
 import { useState, type SyntheticEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 const inputClass =
   "mt-2 w-full rounded-xl border border-border bg-bg px-4 py-3 text-base outline-none focus:border-mint";
@@ -27,14 +26,15 @@ export function LoginForm() {
     setError(null);
     setLoading(true);
     try {
-      const supabase = createClient();
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-
-      if (signInError) {
-        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "이메일 또는 비밀번호가 올바르지 않습니다.");
         return;
       }
 
