@@ -16,6 +16,7 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV API_INTERNAL_URL=http://api:8080
 COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=api-builder /app/backend/target/release/delibot-api /tmp/delibot-api
 COPY . .
 RUN npm run build
 
@@ -31,7 +32,7 @@ RUN apt-get update \
     && useradd --system --uid 10001 --gid delibot --create-home delibot \
     && mkdir -p /data/uploads \
     && chown -R delibot:delibot /data
-COPY --from=api-builder /app/backend/target/release/delibot-api /usr/local/bin/delibot-api
+COPY --from=web-builder /tmp/delibot-api /usr/local/bin/delibot-api
 COPY --from=web-builder --chown=delibot:delibot /app/public ./public
 COPY --from=web-builder --chown=delibot:delibot /app/.next/standalone ./
 COPY --from=web-builder --chown=delibot:delibot /app/.next/static ./.next/static
