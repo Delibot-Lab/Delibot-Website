@@ -10,6 +10,7 @@ FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/*
 RUN useradd --system --uid 10001 --create-home delibot
 COPY --from=builder /app/backend/target/release/delibot-api /usr/local/bin/delibot-api
+RUN touch /build-complete
 USER delibot
 EXPOSE 8080
 CMD ["delibot-api"]

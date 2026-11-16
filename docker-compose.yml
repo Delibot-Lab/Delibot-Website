@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
+      additional_contexts:
+        api_image: service:api
     restart: unless-stopped
     environment:
       API_INTERNAL_URL: http://api:8080
