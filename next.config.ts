@@ -51,7 +51,7 @@ const nextConfig: NextConfig = {
   // CBGPU의 제한된 빌드 컨테이너에서 호스트 CPU 수만큼(현재 33개) 프로세스를
   // 만들면 EAGAIN으로 실패한다. 페이지 수에 충분한 두 워커로 고정한다.
   experimental: {
-    cpus: 2,
+    cpus: process.env.CBGPU_CONSTRAINED_BUILD === "1" ? 1 : 2,
   },
   async rewrites() {
     return [

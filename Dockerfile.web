@@ -16,7 +16,8 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV API_INTERNAL_URL=http://api:8080
 ENV SKIP_BUILD_TYPECHECK=1
-ENV NODE_OPTIONS=--max-old-space-size=2048
+ENV CBGPU_CONSTRAINED_BUILD=1
+ENV NODE_OPTIONS=--max-old-space-size=1536
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=api-builder /app/backend/target/release/delibot-api /tmp/delibot-api
 COPY . .
